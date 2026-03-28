@@ -7,6 +7,7 @@ import 'package:usta_app/core/theme/app_colors.dart';
 import 'package:usta_app/core/router/app_router.dart';
 import 'package:usta_app/data/models/payment_model.dart';
 import 'package:usta_app/domain/entities/entities.dart';
+import 'package:usta_app/l10n/app_localizations.dart';
 import 'package:usta_app/presentation/blocs/blocs.dart';
 import 'package:usta_app/presentation/widgets/gradient_button.dart';
 import 'package:usta_app/presentation/screens/map/location_picker_screen.dart';
@@ -81,7 +82,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     }
   }
 
-  void _confirmOrder() {
+  void _confirmOrder(AppLocalizations l10n) {
     final authState = context.read<AuthBloc>().state;
     if (authState is! AuthAuthenticated) return;
     final user = authState.user;
@@ -121,28 +122,29 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Тапсырыс беру')),
+      appBar: AppBar(title: Text(l10n.createOrderTitle)),
       body: BlocListener<OrderBloc, OrderState>(
-        listener: _handleOrderState,
+        listener: (context, state) => _handleOrderState(context, state, l10n),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildServiceSummary(),
+              _buildServiceSummary(l10n),
               const SizedBox(height: 24),
-              _buildScheduleSection(context),
+              _buildScheduleSection(context, l10n),
               const SizedBox(height: 24),
-              _buildLocationSection(context),
+              _buildLocationSection(context, l10n),
               const SizedBox(height: 24),
-              _buildNotesSection(context),
+              _buildNotesSection(context, l10n),
               const SizedBox(height: 24),
-              _buildPaymentSection(context),
+              _buildPaymentSection(context, l10n),
               const SizedBox(height: 32),
-              _buildPriceBreakdown(),
+              _buildPriceBreakdown(l10n),
               const SizedBox(height: 24),
-              _buildSubmitButton(),
+              _buildSubmitButton(l10n),
               const SizedBox(height: 24),
             ],
           ),
@@ -153,12 +155,16 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   // ─── Event listener ────────────────────────────────────────────────────────
 
-  void _handleOrderState(BuildContext context, OrderState state) {
+  void _handleOrderState(
+    BuildContext context,
+    OrderState state,
+    AppLocalizations l10n,
+  ) {
     if (state is OrderCreated) {
       context.go(AppRouter.orders);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Тапсырыс орналастырылды! 🎉'),
+        SnackBar(
+          content: Text(l10n.createOrderSuccess),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -176,7 +182,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
   // ─── Section builders ──────────────────────────────────────────────────────
 
-  Widget _buildServiceSummary() {
+  Widget _buildServiceSummary(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -213,7 +219,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${widget.service.workerName} арқылы',
+                  '${widget.service.workerName} ${l10n.createOrderVia}',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.8),
                     fontSize: 13,
@@ -235,19 +241,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildScheduleSection(BuildContext context) {
+  Widget _buildScheduleSection(BuildContext context, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Кесте', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          l10n.createOrderSchedule,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
               child: DateTimePickerCard(
                 icon: Icons.calendar_month_rounded,
-                label: 'Күн',
-                value: DateFormat('MMM dd, yyyy').format(_selectedDate),
+                label: l10n.createOrderDate,
+                value: DateFormat('dd.MM.yyyy').format(_selectedDate),
                 onTap: _pickDate,
               ),
             ),
@@ -255,7 +264,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
             Expanded(
               child: DateTimePickerCard(
                 icon: Icons.access_time_rounded,
-                label: 'Уақыт',
+                label: l10n.createOrderTime,
                 value: _selectedTime.format(context),
                 onTap: _pickTime,
               ),
@@ -266,19 +275,22 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildLocationSection(BuildContext context) {
+  Widget _buildLocationSection(BuildContext context, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Орналасуы', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          l10n.createOrderLocation,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 12),
         TextFormField(
           controller: _addressController,
           decoration: InputDecoration(
-            hintText: 'Мекенжайды енгізіңіз',
+            hintText: l10n.createOrderAddressHint,
             prefixIcon: const Icon(Icons.location_on_outlined),
             suffixIcon: Tooltip(
-              message: 'Картадан таңдау',
+              message: l10n.createOrderPickOnMap,
               child: IconButton(
                 icon: const Icon(Icons.map_rounded, color: AppColors.primary),
                 onPressed: _pickLocationOnMap,
@@ -298,7 +310,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               ),
               const SizedBox(width: 6),
               Text(
-                'Координаттар: ${_pickedLatLng!.latitude.toStringAsFixed(5)}, '
+                '${_pickedLatLng!.latitude.toStringAsFixed(5)}, '
                 '${_pickedLatLng!.longitude.toStringAsFixed(5)}',
                 style: const TextStyle(
                   fontSize: 12,
@@ -312,20 +324,20 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildNotesSection(BuildContext context) {
+  Widget _buildNotesSection(BuildContext context, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Ескертпелер (міндетті емес)',
+          l10n.createOrderNotes,
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 12),
         TextFormField(
           controller: _notesController,
-          decoration: const InputDecoration(
-            hintText: 'Арнайы талаптар...',
-            prefixIcon: Icon(Icons.note_outlined),
+          decoration: InputDecoration(
+            hintText: l10n.createOrderNotesHint,
+            prefixIcon: const Icon(Icons.note_outlined),
           ),
           maxLines: 3,
         ),
@@ -333,11 +345,14 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildPaymentSection(BuildContext context) {
+  Widget _buildPaymentSection(BuildContext context, AppLocalizations l10n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Төлем әдісі', style: Theme.of(context).textTheme.titleLarge),
+        Text(
+          l10n.createOrderPayment,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         const SizedBox(height: 12),
         PaymentSelector(
           selected: _selectedPayment,
@@ -347,7 +362,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildPriceBreakdown() {
+  Widget _buildPriceBreakdown(AppLocalizations l10n) {
     final serviceFee = widget.service.price * 0.05;
     final total = widget.service.price + serviceFee;
     return Container(
@@ -359,18 +374,18 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       child: Column(
         children: [
           PriceRow(
-            label: 'Қызмет бағасы',
-            value: '\$${widget.service.price.toStringAsFixed(2)}',
+            label: l10n.createOrderServicePrice,
+            value: '${widget.service.price.toStringAsFixed(0)} ₸',
           ),
           const SizedBox(height: 8),
           PriceRow(
-            label: 'Қызмет ақысы (5%)',
-            value: '\$${serviceFee.toStringAsFixed(2)}',
+            label: l10n.createOrderServiceFee,
+            value: '${serviceFee.toStringAsFixed(0)} ₸',
           ),
           const Divider(height: 20),
           PriceRow(
-            label: 'Жиыны',
-            value: '\$${total.toStringAsFixed(2)}',
+            label: l10n.createOrderTotal,
+            value: '${total.toStringAsFixed(0)} ₸',
             isBold: true,
           ),
         ],
@@ -378,12 +393,12 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildSubmitButton() {
+  Widget _buildSubmitButton(AppLocalizations l10n) {
     return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, state) => GradientButton(
-        onPressed: state is OrderLoading ? null : _confirmOrder,
+        onPressed: state is OrderLoading ? null : () => _confirmOrder(l10n),
         isLoading: state is OrderLoading,
-        label: 'Тапсырысты растау',
+        label: l10n.createOrderConfirm,
         icon: Icons.check_circle_rounded,
       ),
     );

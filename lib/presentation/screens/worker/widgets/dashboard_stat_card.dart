@@ -1,6 +1,5 @@
 // Stat card widget for the worker dashboard
 import 'package:flutter/material.dart';
-import 'package:usta_app/core/theme/app_colors.dart';
 
 /// Карточка со статистикой (доход, количество заказов)
 class DashboardStatCard extends StatelessWidget {

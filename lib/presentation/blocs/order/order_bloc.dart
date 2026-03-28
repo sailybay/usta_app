@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/order_entity.dart';
 import '../../../domain/entities/review_entity.dart';
 import '../../../domain/repositories/order_repository_interface.dart';
-import '../../../data/repositories/review_repository.dart';
+import '../../../domain/repositories/review_repository_interface.dart';
 
 // ─── Events ───────────────────────────────────────────────────────────────────
 abstract class OrderEvent extends Equatable {
@@ -108,12 +108,12 @@ class OrderError extends OrderState {
 /// A2-fix: Depends on OrderRepositoryInterface (not concrete OrderRepository)
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final OrderRepositoryInterface _orderRepository;
-  final ReviewRepository _reviewRepository;
+  final ReviewRepositoryInterface _reviewRepository;
   StreamSubscription<List<OrderEntity>>? _orderSubscription;
 
   OrderBloc({
     required OrderRepositoryInterface orderRepository,
-    required ReviewRepository reviewRepository,
+    required ReviewRepositoryInterface reviewRepository,
   }) : _orderRepository = orderRepository,
        _reviewRepository = reviewRepository,
        super(OrderInitial()) {

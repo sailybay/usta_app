@@ -18,7 +18,9 @@ class AiAssistantService {
   static const String _groqApiUrl =
       'https://api.groq.com/openai/v1/chat/completions';
   static const String _groqApiKey = ApiKeys.groqApiKey;
-  static const String _model = 'llama-3.3-70b-versatile';
+  // Updated to latest available model — llama-3.3-70b-versatile may be
+  // unavailable on new API keys. Use llama-3.1-8b-instant as fallback.
+  static const String _model = 'llama-3.1-8b-instant';
 
   // Conversation history (role: system/user/assistant)
   final List<Map<String, String>> _history = [];
@@ -68,7 +70,7 @@ class AiAssistantService {
       final content =
           response.data['choices'][0]['message']['content'] as String?;
       final reply =
-          content?.trim() ?? 'Не удалось получить ответ. Попробуйте снова.';
+          content?.trim() ?? 'Жауап алу мүмкін болмады. Қайталап көріңіз.';
 
       // Save assistant reply to history for context
       _history.add({'role': 'assistant', 'content': reply});
@@ -79,7 +81,7 @@ class AiAssistantService {
       return _handleDioError(e);
     } catch (e) {
       debugPrint('🤖 AiAssistantService unexpected ERROR: $e');
-      return 'AI временно недоступен. Попробуйте позже.';
+      return 'AI уақытша қолжетімсіз. Кейінірек қайталаңыз.';
     }
   }
 
@@ -88,20 +90,20 @@ class AiAssistantService {
     final errorBody = e.response?.data?.toString().toLowerCase() ?? '';
 
     if (statusCode == 401) {
-      return 'Ошибка авторизации. Проверьте API ключ Groq.';
+      return 'Авторизация қатесі. Groq API кілтін тексеріңіз.';
     } else if (statusCode == 429 ||
         errorBody.contains('quota') ||
         errorBody.contains('rate')) {
-      return 'AI временно перегружен. Попробуйте через минуту.';
+      return 'AI уақытша толып жатыр. Бір минуттан кейін қайталаңыз.';
     } else if (statusCode == 400) {
-      return 'Некорректный запрос к AI. Попробуйте переформулировать.';
+      return 'AI-ға қате сұраным. Басқаша сұрап көріңіз.';
     } else if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
-      return 'Превышено время ожидания. Проверьте интернет-соединение.';
+      return 'Күту уақыты аяқталды. Интернет байланысыңызды тексеріңіз.';
     } else if (e.type == DioExceptionType.connectionError) {
-      return 'Нет подключения к интернету. Проверьте сеть.';
+      return 'Интернет байланысы жоқ. Желіні тексеріңіз.';
     }
-    return 'AI временно недоступен. Попробуйте позже.';
+    return 'AI уақытша қолжетімсіз. Кейінірек қайталаңыз.';
   }
 
   /// Get service recommendation based on user needs

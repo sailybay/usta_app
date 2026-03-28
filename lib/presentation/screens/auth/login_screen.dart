@@ -6,6 +6,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/gradient_button.dart';
+import 'package:usta_app/l10n/app_localizations.dart';
+import 'package:usta_app/presentation/blocs/locale/locale_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -38,37 +40,36 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _showForgotPasswordDialog() {
+  void _showForgotPasswordDialog(AppLocalizations l10n) {
     final resetController = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Reset Password'),
+        title: Text(l10n.loginResetPassword),
         content: TextField(
           controller: resetController,
-          decoration: const InputDecoration(
-            labelText: 'Email',
-            hintText: 'Enter your email',
+          decoration: InputDecoration(
+            labelText: l10n.authEmailLabel,
+            hintText: l10n.loginEnterEmail,
           ),
           keyboardType: TextInputType.emailAddress,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text(l10n.authCancel),
           ),
           TextButton(
             onPressed: () {
               final email = resetController.text.trim();
               if (email.isNotEmpty && email.contains('@')) {
                 Navigator.pop(ctx);
-                // A3 fix: route through BLoC, not directly to repository
                 context.read<AuthBloc>().add(
                   AuthPasswordResetRequested(email: email),
                 );
               }
             },
-            child: const Text('Send Reset Link'),
+            child: Text(l10n.loginSendLink),
           ),
         ],
       ),
@@ -77,6 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -96,8 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           } else if (state is AuthPasswordResetSent) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Password reset link sent!'),
+              SnackBar(
+                content: Text(l10n.loginResetSent),
                 behavior: SnackBarBehavior.floating,
               ),
             );
@@ -110,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 48),
-                // Logo
+                // Logo + Language switcher
                 Row(
                   children: [
                     Container(
@@ -127,21 +129,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Text(
-                      'Usta App',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(fontWeight: FontWeight.w800),
+                    Expanded(
+                      child: Text(
+                        'Usta App',
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(fontWeight: FontWeight.w800),
+                      ),
                     ),
+                    // ─── Language Switcher ───────────────────────────────
+                    _LanguageSwitcher(),
                   ],
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Welcome back! 👋',
+                  l10n.loginTitle,
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Sign in to continue',
+                  l10n.loginSubtitle,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -153,24 +159,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       CustomTextField(
                         controller: _emailController,
-                        label: 'Email',
-                        hint: 'your@email.com',
+                        label: l10n.authEmailLabel,
+                        hint: l10n.authEmailHint,
                         prefixIcon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) {
                           if (v == null || v.isEmpty) {
-                            return 'Email is required';
+                            return l10n.authEmailRequired;
                           }
-
-                          if (!v.contains('@')) return 'Enter a valid email';
+                          if (!v.contains('@')) {
+                            return l10n.authEmailInvalid;
+                          }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
                       CustomTextField(
                         controller: _passwordController,
-                        label: 'Password',
-                        hint: '••••••••',
+                        label: l10n.authPasswordLabel,
+                        hint: l10n.authPasswordHint,
                         prefixIcon: Icons.lock_outline_rounded,
                         obscureText: _obscurePassword,
                         suffixIcon: IconButton(
@@ -185,13 +192,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
-                            return 'Password is required';
+                            return l10n.authPasswordRequired;
                           }
-
                           if (v.length < 6) {
-                            return 'Password must be 6+ characters';
+                            return l10n.authPasswordTooShort;
                           }
-
                           return null;
                         },
                       ),
@@ -202,8 +207,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: _showForgotPasswordDialog,
-                    child: const Text('Forgot password?'),
+                    onPressed: () => _showForgotPasswordDialog(l10n),
+                    child: Text(l10n.loginForgotPassword),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -212,7 +217,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     return GradientButton(
                       onPressed: state is AuthLoading ? null : _login,
                       isLoading: state is AuthLoading,
-                      label: 'Sign In',
+                      label: l10n.authSignIn,
                     );
                   },
                 ),
@@ -221,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Don't have an account? ",
+                      l10n.loginNoAccount,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -229,9 +234,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       onPressed: () => context.go(AppRouter.register),
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                      child: const Text(
-                        'Register',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      child: Text(
+                        l10n.loginRegister,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -242,6 +247,62 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Language switcher button shown on Login screen
+class _LanguageSwitcher extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return BlocBuilder<LocaleBloc, LocaleState>(
+      builder: (context, state) {
+        return PopupMenuButton<String>(
+          tooltip: l10n.settingsLanguage,
+          icon: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.language_rounded, size: 20),
+              const SizedBox(width: 4),
+              Text(
+                state.locale.languageCode.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+          onSelected: (code) {
+            context.read<LocaleBloc>().add(LocaleChanged(Locale(code)));
+          },
+          itemBuilder: (_) => [
+            PopupMenuItem(
+              value: 'kk',
+              child: Row(
+                children: [
+                  if (state.locale.languageCode == 'kk')
+                    const Icon(Icons.check, size: 16, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  Text(l10n.langKk),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: 'ru',
+              child: Row(
+                children: [
+                  if (state.locale.languageCode == 'ru')
+                    const Icon(Icons.check, size: 16, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  Text(l10n.langRu),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

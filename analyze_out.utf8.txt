@@ -1,0 +1,6 @@
+C:\Users\baga.HOME-PC\development\diploma_project\usta_app\analyzer.dart:13 - Unnecessary braces in a string interpolation.
+core\di\app_providers.dart:7 - The import of 'package:usta_app/presentation/blocs/locale/locale_bloc.dart' is unnecessary because all of the used elements are also provided by the import of 'package:usta_app/presentation/blocs/blocs.dart'.
+presentation\screens\auth\login_screen.dart:168 - Statements in an if should be enclosed in a block.
+presentation\screens\auth\login_screen.dart:192 - Statements in an if should be enclosed in a block.
+presentation\screens\auth\register_screen.dart:124 - Statements in an if should be enclosed in a block.
+presentation\screens\auth\register_screen.dart:159 - Statements in an if should be enclosed in a block.

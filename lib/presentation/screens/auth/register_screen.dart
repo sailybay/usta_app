@@ -7,6 +7,7 @@ import '../../../domain/entities/user_entity.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../widgets/custom_text_field.dart';
 import '../../widgets/gradient_button.dart';
+import 'package:usta_app/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -49,6 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -81,12 +83,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Create Account ✨',
+                  l10n.registerTitle,
                   style: Theme.of(context).textTheme.displaySmall,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Join Usta App today',
+                  l10n.registerSubtitle,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.textSecondary,
                   ),
@@ -94,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 28),
 
                 // Role selector
-                _buildRoleSelector(),
+                _buildRoleSelector(l10n),
                 const SizedBox(height: 24),
 
                 Form(
@@ -103,43 +105,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       CustomTextField(
                         controller: _nameController,
-                        label: 'Full Name',
-                        hint: 'John Doe',
+                        label: l10n.registerFullName,
+                        hint: l10n.registerFullNameHint,
                         prefixIcon: Icons.person_outline_rounded,
-                        validator: (v) =>
-                            (v?.isEmpty ?? true) ? 'Name is required' : null,
+                        validator: (v) => (v?.isEmpty ?? true)
+                            ? l10n.registerNameRequired
+                            : null,
                       ),
                       const SizedBox(height: 16),
                       CustomTextField(
                         controller: _emailController,
-                        label: 'Email',
-                        hint: 'your@email.com',
+                        label: l10n.authEmailLabel,
+                        hint: l10n.authEmailHint,
                         prefixIcon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
                         validator: (v) {
                           if (v == null || v.isEmpty) {
-                            return 'Email is required';
+                            return l10n.authEmailRequired;
                           }
-
-                          if (!v.contains('@')) return 'Enter a valid email';
+                          if (!v.contains('@')) {
+                            return l10n.authEmailInvalid;
+                          }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
                       CustomTextField(
                         controller: _phoneController,
-                        label: 'Phone Number',
-                        hint: '+1 234 567 890',
+                        label: l10n.registerPhone,
+                        hint: l10n.registerPhoneHint,
                         prefixIcon: Icons.phone_outlined,
                         keyboardType: TextInputType.phone,
-                        validator: (v) =>
-                            (v?.isEmpty ?? true) ? 'Phone is required' : null,
+                        validator: (v) => (v?.isEmpty ?? true)
+                            ? l10n.registerPhoneRequired
+                            : null,
                       ),
                       const SizedBox(height: 16),
                       CustomTextField(
                         controller: _passwordController,
-                        label: 'Password',
-                        hint: '6+ characters',
+                        label: l10n.authPasswordLabel,
+                        hint: l10n.authPasswordHint,
                         prefixIcon: Icons.lock_outline_rounded,
                         obscureText: _obscurePassword,
                         suffixIcon: IconButton(
@@ -154,13 +159,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         validator: (v) {
                           if (v == null || v.isEmpty) {
-                            return 'Password is required';
+                            return l10n.authPasswordRequired;
                           }
-
                           if (v.length < 6) {
-                            return 'Password must be 6+ characters';
+                            return l10n.authPasswordTooShort;
                           }
-
                           return null;
                         },
                       ),
@@ -173,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return GradientButton(
                       onPressed: state is AuthLoading ? null : _register,
                       isLoading: state is AuthLoading,
-                      label: 'Create Account',
+                      label: l10n.registerCreateAccount,
                     );
                   },
                 ),
@@ -182,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Already have an account? ',
+                      l10n.registerHaveAccount,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -190,9 +193,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     TextButton(
                       onPressed: () => context.go(AppRouter.login),
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      child: Text(
+                        l10n.registerSignIn,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -206,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildRoleSelector() {
+  Widget _buildRoleSelector(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -216,14 +219,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Row(
         children: [
           _RoleChip(
-            label: 'Client',
+            label: l10n.registerClientRole,
             icon: Icons.person_rounded,
             isSelected: _selectedRole == UserRole.client,
             onTap: () => setState(() => _selectedRole = UserRole.client),
           ),
           const SizedBox(width: 4),
           _RoleChip(
-            label: 'Service Provider',
+            label: l10n.registerWorkerRole,
             icon: Icons.build_rounded,
             isSelected: _selectedRole == UserRole.worker,
             onTap: () => setState(() => _selectedRole = UserRole.worker),

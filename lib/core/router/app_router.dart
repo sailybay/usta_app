@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:usta_app/l10n/app_localizations.dart';
@@ -39,26 +40,27 @@ class AppRouter {
   static const String workerDashboard = '/worker-dashboard';
   static const String map = '/map';
 
-  // A4-fix: Auth guard via redirect — router is a singleton so it won't be recreated.
-  // A5-fix: Entities still passed via `extra` for now (no deep-link needed in diploma scope),
-  //         but the router gracefully handles null extra to prevent crashes.
+  static final _authListenable = _AuthBlocListenable();
+
+  /// Call this once when AuthBloc is created (from AppProviders.initState)
+  static void setAuthStream(Stream<dynamic> stream) {
+    _authListenable.setStream(stream);
+  }
+
+  // A4-fix: Auth guard via redirect
   static final GoRouter router = GoRouter(
     initialLocation: splash,
     redirect: (BuildContext context, GoRouterState state) {
-      // Allow navigation during splash/onboarding before auth is checked
       final location = state.matchedLocation;
       if (_publicRoutes.contains(location)) return null;
 
       final authState = context.read<AuthBloc>().state;
       final isLoggedIn = authState is AuthAuthenticated;
 
-      if (!isLoggedIn) {
-        // User is not authenticated → redirect to login
-        return login;
-      }
+      if (!isLoggedIn) return login;
       return null;
     },
-    refreshListenable: _AuthBlocListenable(),
+    refreshListenable: _authListenable,
     routes: [
       GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
       GoRoute(
@@ -133,14 +135,22 @@ class AppRouter {
   );
 }
 
-/// Notifier that tells GoRouter to re-evaluate the redirect whenever AuthBloc changes.
-/// This ensures guard fires on login/logout without restarting the app.
+/// C4-fix: Reactive auth guard. AppProviders wires AuthBloc.stream into this
+/// via [AppRouter.setAuthStream]. When the stream emits (login/logout/register),
+/// GoRouter re-evaluates its redirect function and sends the user to the right place.
 class _AuthBlocListenable extends ChangeNotifier {
-  // GoRouter picks this up automatically; we don't need to subscribe here
-  // because GoRouter calls redirect on every navigation event.
-  // For reactive guard on AuthBloc stream changes, use GoRouterRefreshStream
-  // with authRepository.authStateChanges. This minimal version is sufficient
-  // for synchronous auth checks after login/logout.
+  StreamSubscription<dynamic>? _sub;
+
+  void setStream(Stream<dynamic> stream) {
+    _sub?.cancel();
+    _sub = stream.listen((_) => notifyListeners());
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
 }
 
 /// Bottom navigation shell widget
@@ -203,5 +213,21 @@ class _MainShellState extends State<MainShell> {
         ],
       ),
     );
+  }
+}
+
+/// C4-fix: Wraps the AuthBloc stream so GoRouter reacts to every auth change.
+/// The old empty ChangeNotifier never called notifyListeners(), so logout
+/// didn’t trigger redirect. This implementation does.
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 }

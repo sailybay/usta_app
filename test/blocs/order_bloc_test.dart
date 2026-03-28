@@ -62,14 +62,14 @@ void main() {
     registerFallbackValue(_makeReview());
   });
 
-  OrderBloc _buildBloc() => OrderBloc(
+  OrderBloc buildBloc() => OrderBloc(
     orderRepository: mockOrderRepo,
     reviewRepository: mockReviewRepo,
   );
 
   // ─── A2 Fix: BLoC accepts interface ─────────────────────────────────────────
   test('A2 fix — OrderBloc accepts OrderRepositoryInterface', () {
-    expect(() => _buildBloc(), returnsNormally);
+    expect(() => buildBloc(), returnsNormally);
   });
 
   // ─── OrderLoadClientOrders ───────────────────────────────────────────────────
@@ -82,7 +82,7 @@ void main() {
         when(
           () => mockOrderRepo.watchClientOrders(any()),
         ).thenAnswer((_) => Stream.value(orders));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(OrderLoadClientOrders('c1')),
       expect: () => [
@@ -102,7 +102,7 @@ void main() {
         when(
           () => mockOrderRepo.createOrder(any()),
         ).thenAnswer((_) async => order);
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(OrderCreate(order)),
       expect: () => [
@@ -117,7 +117,7 @@ void main() {
         when(
           () => mockOrderRepo.createOrder(any()),
         ).thenThrow(Exception('network error'));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(OrderCreate(order)),
       expect: () => [isA<OrderLoading>(), isA<OrderError>()],
@@ -132,7 +132,7 @@ void main() {
         when(
           () => mockOrderRepo.cancelOrder(any(), any()),
         ).thenAnswer((_) async {});
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(OrderCancel('o1', 'Changed mind')),
       expect: () => [isA<OrderActionSuccess>()],
@@ -144,7 +144,7 @@ void main() {
         when(
           () => mockOrderRepo.cancelOrder(any(), any()),
         ).thenThrow(Exception('fail'));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(OrderCancel('o1', 'reason')),
       expect: () => [isA<OrderError>()],
@@ -159,7 +159,7 @@ void main() {
         when(
           () => mockOrderRepo.updateOrderStatus(any(), any()),
         ).thenAnswer((_) async {});
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(OrderUpdateStatus('o1', OrderStatus.accepted)),
       expect: () => [isA<OrderActionSuccess>()],
@@ -182,7 +182,7 @@ void main() {
         when(
           () => mockReviewRepo.updateWorkerRating(any(), any()),
         ).thenAnswer((_) async {});
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) =>
           bloc.add(OrderSubmitReview(review: review, workerId: 'w1')),
@@ -195,7 +195,7 @@ void main() {
         when(
           () => mockReviewRepo.createReview(any()),
         ).thenThrow(Exception('review failed'));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) =>
           bloc.add(OrderSubmitReview(review: review, workerId: 'w1')),

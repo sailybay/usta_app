@@ -697,6 +697,534 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Қайталау'**
   String get errorRetry;
+
+  /// No description provided for @langKk.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қазақша'**
+  String get langKk;
+
+  /// No description provided for @langRu.
+  ///
+  /// In kk, this message translates to:
+  /// **'Орысша'**
+  String get langRu;
+
+  /// No description provided for @langEn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ағылшынша'**
+  String get langEn;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тіл'**
+  String get settingsLanguage;
+
+  /// No description provided for @createOrderTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс беру'**
+  String get createOrderTitle;
+
+  /// No description provided for @createOrderSchedule.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кесте'**
+  String get createOrderSchedule;
+
+  /// No description provided for @createOrderDate.
+  ///
+  /// In kk, this message translates to:
+  /// **'Күн'**
+  String get createOrderDate;
+
+  /// No description provided for @createOrderTime.
+  ///
+  /// In kk, this message translates to:
+  /// **'Уақыт'**
+  String get createOrderTime;
+
+  /// No description provided for @createOrderLocation.
+  ///
+  /// In kk, this message translates to:
+  /// **'Орналасуы'**
+  String get createOrderLocation;
+
+  /// No description provided for @createOrderAddressHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мекенжайды енгізіңіз'**
+  String get createOrderAddressHint;
+
+  /// No description provided for @createOrderPickOnMap.
+  ///
+  /// In kk, this message translates to:
+  /// **'Картадан таңдау'**
+  String get createOrderPickOnMap;
+
+  /// No description provided for @createOrderNotes.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ескертпелер (міндетті емес)'**
+  String get createOrderNotes;
+
+  /// No description provided for @createOrderNotesHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Арнайы талаптар...'**
+  String get createOrderNotesHint;
+
+  /// No description provided for @createOrderPayment.
+  ///
+  /// In kk, this message translates to:
+  /// **'Төлем әдісі'**
+  String get createOrderPayment;
+
+  /// No description provided for @createOrderServiceFee.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет ақысы (5%)'**
+  String get createOrderServiceFee;
+
+  /// No description provided for @createOrderTotal.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жиыны'**
+  String get createOrderTotal;
+
+  /// No description provided for @createOrderConfirm.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырысты растау'**
+  String get createOrderConfirm;
+
+  /// No description provided for @createOrderSuccess.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс орналастырылды! 🎉'**
+  String get createOrderSuccess;
+
+  /// No description provided for @createOrderServicePrice.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет бағасы'**
+  String get createOrderServicePrice;
+
+  /// No description provided for @createOrderVia.
+  ///
+  /// In kk, this message translates to:
+  /// **'арқылы'**
+  String get createOrderVia;
+
+  /// No description provided for @workerDashboardTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Маман бақылау тақтасы'**
+  String get workerDashboardTitle;
+
+  /// No description provided for @workerGreeting.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сәлем, {name}! 👋'**
+  String workerGreeting(String name);
+
+  /// No description provided for @workerOverview.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жұмыс нәтижелеріңіздің шолуы'**
+  String get workerOverview;
+
+  /// No description provided for @workerTotalIncome.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жалпы табыс'**
+  String get workerTotalIncome;
+
+  /// No description provided for @workerCompleted.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аяқталды'**
+  String get workerCompleted;
+
+  /// No description provided for @workerPendingOrders.
+  ///
+  /// In kk, this message translates to:
+  /// **'Күтіп тұрған тапсырыстар'**
+  String get workerPendingOrders;
+
+  /// No description provided for @workerNoPending.
+  ///
+  /// In kk, this message translates to:
+  /// **'Күтіп тұрған тапсырыстар жоқ 🎉'**
+  String get workerNoPending;
+
+  /// No description provided for @workerAccept.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қабылдау'**
+  String get workerAccept;
+
+  /// No description provided for @workerView.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қарау'**
+  String get workerView;
+
+  /// No description provided for @workerIncomeChart.
+  ///
+  /// In kk, this message translates to:
+  /// **'Табыс шолуы'**
+  String get workerIncomeChart;
+
+  /// No description provided for @workerAiSuggestion.
+  ///
+  /// In kk, this message translates to:
+  /// **'AI Ұсынысы'**
+  String get workerAiSuggestion;
+
+  /// No description provided for @workerAskAi.
+  ///
+  /// In kk, this message translates to:
+  /// **'AI-дан кеңес сұрау →'**
+  String get workerAskAi;
+
+  /// No description provided for @workerStartWork.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жұмысты бастау'**
+  String get workerStartWork;
+
+  /// No description provided for @workerCompleteOrder.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырысты аяқтау'**
+  String get workerCompleteOrder;
+
+  /// No description provided for @workerRejectOrder.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бас тарту'**
+  String get workerRejectOrder;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунт жасау ✨'**
+  String get registerTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ұста Қосымшасына қосылыңыз'**
+  String get registerSubtitle;
+
+  /// No description provided for @registerClientRole.
+  ///
+  /// In kk, this message translates to:
+  /// **'Клиент'**
+  String get registerClientRole;
+
+  /// No description provided for @registerWorkerRole.
+  ///
+  /// In kk, this message translates to:
+  /// **'Маман'**
+  String get registerWorkerRole;
+
+  /// No description provided for @registerFullName.
+  ///
+  /// In kk, this message translates to:
+  /// **'Толық аты'**
+  String get registerFullName;
+
+  /// No description provided for @registerFullNameHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Азамат Нұрланов'**
+  String get registerFullNameHint;
+
+  /// No description provided for @registerNameRequired.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аты қажет'**
+  String get registerNameRequired;
+
+  /// No description provided for @registerPhone.
+  ///
+  /// In kk, this message translates to:
+  /// **'Телефон нөмірі'**
+  String get registerPhone;
+
+  /// No description provided for @registerPhoneHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'+7 777 000 0000'**
+  String get registerPhoneHint;
+
+  /// No description provided for @registerPhoneRequired.
+  ///
+  /// In kk, this message translates to:
+  /// **'Телефон қажет'**
+  String get registerPhoneRequired;
+
+  /// No description provided for @registerCreateAccount.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунт жасау'**
+  String get registerCreateAccount;
+
+  /// No description provided for @registerHaveAccount.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунт бар ма? '**
+  String get registerHaveAccount;
+
+  /// No description provided for @registerSignIn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кіру'**
+  String get registerSignIn;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қайта оралдыңыз! 👋'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жалғастыру үшін кіріңіз'**
+  String get loginSubtitle;
+
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In kk, this message translates to:
+  /// **'Құпия сөзді ұмыттыңыз ба?'**
+  String get loginForgotPassword;
+
+  /// No description provided for @loginResetPassword.
+  ///
+  /// In kk, this message translates to:
+  /// **'Құпия сөзді қалпына келтіру'**
+  String get loginResetPassword;
+
+  /// No description provided for @loginEnterEmail.
+  ///
+  /// In kk, this message translates to:
+  /// **'Электрондық поштаңызды енгізіңіз'**
+  String get loginEnterEmail;
+
+  /// No description provided for @loginSendLink.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сілтемені жіберу'**
+  String get loginSendLink;
+
+  /// No description provided for @loginResetSent.
+  ///
+  /// In kk, this message translates to:
+  /// **'Құпия сөзді қалпына келтіру сілтемесі жіберілді!'**
+  String get loginResetSent;
+
+  /// No description provided for @loginNoAccount.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аккаунт жоқ па? '**
+  String get loginNoAccount;
+
+  /// No description provided for @loginRegister.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тіркелу'**
+  String get loginRegister;
+
+  /// No description provided for @orderDetailTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс мәліметтері'**
+  String get orderDetailTitle;
+
+  /// No description provided for @orderStatusLabel.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс күйі'**
+  String get orderStatusLabel;
+
+  /// No description provided for @orderServiceDetails.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет мәліметтері'**
+  String get orderServiceDetails;
+
+  /// No description provided for @orderService.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет'**
+  String get orderService;
+
+  /// No description provided for @orderCategory.
+  ///
+  /// In kk, this message translates to:
+  /// **'Санат'**
+  String get orderCategory;
+
+  /// No description provided for @orderProvider.
+  ///
+  /// In kk, this message translates to:
+  /// **'Маман'**
+  String get orderProvider;
+
+  /// No description provided for @orderAmount.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сома'**
+  String get orderAmount;
+
+  /// No description provided for @orderAddress.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мекенжай'**
+  String get orderAddress;
+
+  /// No description provided for @orderNotes.
+  ///
+  /// In kk, this message translates to:
+  /// **'Ескертпелер'**
+  String get orderNotes;
+
+  /// No description provided for @orderScheduleTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Кесте'**
+  String get orderScheduleTitle;
+
+  /// No description provided for @orderTimelineTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс уақыт желісі'**
+  String get orderTimelineTitle;
+
+  /// No description provided for @orderPlaced.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс берілді'**
+  String get orderPlaced;
+
+  /// No description provided for @orderAccepted.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қабылданды'**
+  String get orderAccepted;
+
+  /// No description provided for @orderInProgress.
+  ///
+  /// In kk, this message translates to:
+  /// **'Орындалуда'**
+  String get orderInProgress;
+
+  /// No description provided for @orderCompleted.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аяқталды'**
+  String get orderCompleted;
+
+  /// No description provided for @orderChatWithProvider.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мамандармен чат'**
+  String get orderChatWithProvider;
+
+  /// No description provided for @orderLeaveReviewBtn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікір қалдыру'**
+  String get orderLeaveReviewBtn;
+
+  /// No description provided for @orderCancelBtn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырысты бас тарту'**
+  String get orderCancelBtn;
+
+  /// No description provided for @orderCancelTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырысты бас тарту'**
+  String get orderCancelTitle;
+
+  /// No description provided for @orderCancelReasonHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бас тарту себебі'**
+  String get orderCancelReasonHint;
+
+  /// No description provided for @orderBack.
+  ///
+  /// In kk, this message translates to:
+  /// **'Артқа'**
+  String get orderBack;
+
+  /// No description provided for @orderWriteReview.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікіріңізді жазыңыз...'**
+  String get orderWriteReview;
+
+  /// No description provided for @orderRateTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тәжірибеңізді бағалаңыз'**
+  String get orderRateTitle;
+
+  /// No description provided for @orderSubmitReviewBtn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Пікір жіберу'**
+  String get orderSubmitReviewBtn;
+
+  /// No description provided for @orderAskAi.
+  ///
+  /// In kk, this message translates to:
+  /// **'AI-дан сұрау'**
+  String get orderAskAi;
+
+  /// No description provided for @ordersMyOrders.
+  ///
+  /// In kk, this message translates to:
+  /// **'Менің тапсырыстарым'**
+  String get ordersMyOrders;
+
+  /// No description provided for @ordersActive.
+  ///
+  /// In kk, this message translates to:
+  /// **'Белсенді'**
+  String get ordersActive;
+
+  /// No description provided for @ordersCompleted.
+  ///
+  /// In kk, this message translates to:
+  /// **'Аяқталған'**
+  String get ordersCompleted;
+
+  /// No description provided for @ordersCancelled.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бас тартылған'**
+  String get ordersCancelled;
+
+  /// No description provided for @ordersNoOrders.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыстар жоқ'**
+  String get ordersNoOrders;
+
+  /// No description provided for @ordersMadeBy.
+  ///
+  /// In kk, this message translates to:
+  /// **'арқылы'**
+  String get ordersMadeBy;
 }
 
 class _AppLocalizationsDelegate

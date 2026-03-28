@@ -31,7 +31,7 @@ void main() {
     registerFallbackValue(UserRole.client);
   });
 
-  AuthBloc _buildBloc() => AuthBloc(authRepository: mockRepo);
+  AuthBloc buildBloc() => AuthBloc(authRepository: mockRepo);
 
   // ─── AuthCheckRequested ──────────────────────────────────────────────────────
   group('AuthCheckRequested', () {
@@ -41,7 +41,7 @@ void main() {
         when(
           () => mockRepo.getCurrentUserData(),
         ).thenAnswer((_) async => _makeUser());
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(AuthCheckRequested()),
       expect: () => [isA<AuthLoading>(), isA<AuthAuthenticated>()],
@@ -51,7 +51,7 @@ void main() {
       'emits [AuthLoading, AuthUnauthenticated] when no user',
       build: () {
         when(() => mockRepo.getCurrentUserData()).thenAnswer((_) async => null);
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(AuthCheckRequested()),
       expect: () => [isA<AuthLoading>(), isA<AuthUnauthenticated>()],
@@ -61,7 +61,7 @@ void main() {
       'emits [AuthLoading, AuthUnauthenticated] on exception',
       build: () {
         when(() => mockRepo.getCurrentUserData()).thenThrow(Exception('error'));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(AuthCheckRequested()),
       expect: () => [isA<AuthLoading>(), isA<AuthUnauthenticated>()],
@@ -79,7 +79,7 @@ void main() {
             password: any(named: 'password'),
           ),
         ).thenAnswer((_) async => _makeUser());
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(
         AuthLoginRequested(email: 'test@test.com', password: 'password123'),
@@ -103,7 +103,7 @@ void main() {
             password: any(named: 'password'),
           ),
         ).thenThrow(Exception('[firebase_auth/wrong-password]'));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(
         AuthLoginRequested(email: 'test@test.com', password: 'wrong'),
@@ -126,7 +126,7 @@ void main() {
             role: any(named: 'role'),
           ),
         ).thenAnswer((_) async => _makeUser());
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(
         AuthRegisterRequested(
@@ -149,7 +149,7 @@ void main() {
         when(
           () => mockRepo.sendPasswordResetEmail(any()),
         ).thenAnswer((_) async {});
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) =>
           bloc.add(AuthPasswordResetRequested(email: 'test@test.com')),
@@ -168,7 +168,7 @@ void main() {
         when(
           () => mockRepo.sendPasswordResetEmail(any()),
         ).thenThrow(Exception('invalid email'));
-        return _buildBloc();
+        return buildBloc();
       },
       act: (bloc) => bloc.add(AuthPasswordResetRequested(email: 'bad-email')),
       expect: () => [isA<AuthError>()],
@@ -180,7 +180,7 @@ void main() {
     'AuthLogoutRequested emits AuthUnauthenticated',
     build: () {
       when(() => mockRepo.signOut()).thenAnswer((_) async {});
-      return _buildBloc();
+      return buildBloc();
     },
     act: (bloc) => bloc.add(AuthLogoutRequested()),
     expect: () => [isA<AuthUnauthenticated>()],
@@ -196,7 +196,7 @@ void main() {
       ),
     ).thenAnswer((_) async => workerUser);
 
-    final bloc = _buildBloc();
+    final bloc = buildBloc();
     bloc.add(AuthLoginRequested(email: 'w@test.com', password: '123456'));
     await Future<void>.delayed(const Duration(milliseconds: 100));
 

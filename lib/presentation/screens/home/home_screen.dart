@@ -357,21 +357,23 @@ class _FilterBottomSheetState extends State<_FilterBottomSheet> {
           const SizedBox(height: 20),
           Text(l10n.homeSortBy, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 16),
-          Column(
-            children: ['rating', 'price_asc', 'price_desc'].map((sort) {
-              final labels = {
-                'rating': l10n.homeSortRating,
-                'price_asc': l10n.homeSortPriceLow,
-                'price_desc': l10n.homeSortPriceHigh,
-              };
-              return RadioListTile<String>(
-                title: Text(labels[sort]!),
-                value: sort,
-                groupValue: _sortBy,
-                activeColor: AppColors.primary,
-                onChanged: (v) => setState(() => _sortBy = v!),
-              );
-            }).toList(),
+          RadioGroup<String>(
+            groupValue: _sortBy,
+            onChanged: (v) => setState(() => _sortBy = v!),
+            child: Column(
+              children: ['rating', 'price_asc', 'price_desc'].map((sort) {
+                final labels = {
+                  'rating': l10n.homeSortRating,
+                  'price_asc': l10n.homeSortPriceLow,
+                  'price_desc': l10n.homeSortPriceHigh,
+                };
+                return RadioListTile<String>(
+                  title: Text(labels[sort]!),
+                  value: sort,
+                  activeColor: AppColors.primary,
+                );
+              }).toList(),
+            ),
           ),
           const SizedBox(height: 16),
           SizedBox(

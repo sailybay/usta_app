@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:usta_app/core/ai/ai_assistant_service.dart';
+import 'package:usta_app/core/router/app_router.dart';
 import 'package:usta_app/data/repositories/repositories.dart';
 import 'package:usta_app/presentation/blocs/blocs.dart';
 
 /// Корневой провайдер — настраивает все репозитории и BLoC-и для всего приложения.
-/// Добавить новый BLoC: 1) создать поле, 2) инициализировать в initState, 3) закрыть в dispose, 4) добавить в providers.
 class AppProviders extends StatefulWidget {
   final Widget child;
   const AppProviders({super.key, required this.child});
@@ -28,6 +28,7 @@ class _AppProvidersState extends State<AppProviders> {
   late final ServiceBloc _serviceBloc;
   late final OrderBloc _orderBloc;
   late final AiBloc _aiBloc;
+  late final LocaleBloc _localeBloc;
 
   @override
   void initState() {
@@ -41,12 +42,15 @@ class _AppProvidersState extends State<AppProviders> {
 
     _authBloc = AuthBloc(authRepository: _authRepository)
       ..add(AuthCheckRequested());
+    // C4-fix: Wire reactive router guard to AuthBloc stream
+    AppRouter.setAuthStream(_authBloc.stream);
     _serviceBloc = ServiceBloc(serviceRepository: _serviceRepository);
     _orderBloc = OrderBloc(
       orderRepository: _orderRepository,
       reviewRepository: _reviewRepository,
     );
     _aiBloc = AiBloc(aiService: _aiService);
+    _localeBloc = LocaleBloc()..add(LocaleLoaded());
   }
 
   @override
@@ -55,6 +59,7 @@ class _AppProvidersState extends State<AppProviders> {
     _serviceBloc.close();
     _orderBloc.close();
     _aiBloc.close();
+    _localeBloc.close();
     super.dispose();
   }
 
@@ -74,6 +79,7 @@ class _AppProvidersState extends State<AppProviders> {
           BlocProvider.value(value: _serviceBloc),
           BlocProvider.value(value: _orderBloc),
           BlocProvider.value(value: _aiBloc),
+          BlocProvider.value(value: _localeBloc),
         ],
         child: widget.child,
       ),

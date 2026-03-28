@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/router/app_router.dart';
 import '../../../domain/entities/order_entity.dart';
 import '../../../domain/entities/review_entity.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../blocs/order/order_bloc.dart';
 import '../../blocs/ai/ai_bloc.dart';
 import '../../widgets/order_status_badge.dart';
@@ -17,9 +18,10 @@ class OrderDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Details'),
+        title: Text(l10n.orderDetailTitle),
         actions: [
           IconButton(
             icon: const Icon(
@@ -35,7 +37,7 @@ class OrderDetailScreen extends StatelessWidget {
               );
               context.push(AppRouter.aiChat);
             },
-            tooltip: 'Ask AI about this order',
+            tooltip: l10n.orderAskAi,
           ),
         ],
       ),
@@ -44,24 +46,15 @@ class OrderDetailScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status banner
-            _buildStatusBanner(context),
+            _buildStatusBanner(context, l10n),
             const SizedBox(height: 20),
-
-            // Order info
-            _buildInfoSection(context),
+            _buildInfoSection(context, l10n),
             const SizedBox(height: 20),
-
-            // Schedule
-            _buildScheduleSection(context),
+            _buildScheduleSection(context, l10n),
             const SizedBox(height: 20),
-
-            // Timeline
-            _buildTimeline(context),
+            _buildTimeline(context, l10n),
             const SizedBox(height: 24),
-
-            // Actions
-            _buildActions(context),
+            _buildActions(context, l10n),
             const SizedBox(height: 40),
           ],
         ),
@@ -69,7 +62,7 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBanner(BuildContext context) {
+  Widget _buildStatusBanner(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -82,13 +75,13 @@ class OrderDetailScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Order Status',
-                  style: TextStyle(color: Colors.white70, fontSize: 13),
+                Text(
+                  l10n.orderStatusLabel,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  order.status.label,
+                  _localizedStatus(order.status, l10n),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 22,
@@ -104,37 +97,37 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoSection(BuildContext context) {
+  Widget _buildInfoSection(BuildContext context, AppLocalizations l10n) {
     return _SectionCard(
-      title: 'Service Details',
+      title: l10n.orderServiceDetails,
       child: Column(
         children: [
-          _InfoRow(label: 'Service', value: order.serviceName),
-          _InfoRow(label: 'Category', value: order.serviceCategory),
-          _InfoRow(label: 'Provider', value: order.workerName),
+          _InfoRow(label: l10n.orderService, value: order.serviceName),
+          _InfoRow(label: l10n.orderCategory, value: order.serviceCategory),
+          _InfoRow(label: l10n.orderProvider, value: order.workerName),
           _InfoRow(
-            label: 'Amount',
-            value: '\$${order.amount.toStringAsFixed(2)}',
+            label: l10n.orderAmount,
+            value: '${order.amount.toStringAsFixed(0)} ₸',
             isHighlighted: true,
           ),
           if (order.address != null && order.address!.isNotEmpty)
-            _InfoRow(label: 'Address', value: order.address!),
+            _InfoRow(label: l10n.orderAddress, value: order.address!),
           if (order.notes != null && order.notes!.isNotEmpty)
-            _InfoRow(label: 'Notes', value: order.notes!),
+            _InfoRow(label: l10n.orderNotes, value: order.notes!),
         ],
       ),
     );
   }
 
-  Widget _buildScheduleSection(BuildContext context) {
+  Widget _buildScheduleSection(BuildContext context, AppLocalizations l10n) {
     return _SectionCard(
-      title: 'Schedule',
+      title: l10n.orderScheduleTitle,
       child: Row(
         children: [
           _DateTimeChip(
             icon: Icons.calendar_month_rounded,
             label: 'Date',
-            value: DateFormat('MMM dd, yyyy').format(order.scheduledAt),
+            value: DateFormat('dd.MM.yyyy').format(order.scheduledAt),
           ),
           const SizedBox(width: 12),
           _DateTimeChip(
@@ -147,16 +140,28 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeline(BuildContext context) {
+  Widget _buildTimeline(BuildContext context, AppLocalizations l10n) {
     final steps = [
-      _TimelineStep('Order Placed', order.createdAt, true),
-      _TimelineStep('Accepted', order.acceptedAt, order.acceptedAt != null),
-      _TimelineStep('In Progress', order.startedAt, order.startedAt != null),
-      _TimelineStep('Completed', order.completedAt, order.completedAt != null),
+      _TimelineStep(l10n.orderPlaced, order.createdAt, true),
+      _TimelineStep(
+        l10n.orderAccepted,
+        order.acceptedAt,
+        order.acceptedAt != null,
+      ),
+      _TimelineStep(
+        l10n.orderInProgress,
+        order.startedAt,
+        order.startedAt != null,
+      ),
+      _TimelineStep(
+        l10n.orderCompleted,
+        order.completedAt,
+        order.completedAt != null,
+      ),
     ];
 
     return _SectionCard(
-      title: 'Order Timeline',
+      title: l10n.orderTimelineTitle,
       child: Column(
         children: steps.map((step) {
           final isLast = step == steps.last;
@@ -202,7 +207,7 @@ class OrderDetailScreen extends StatelessWidget {
                       ),
                       if (step.time != null)
                         Text(
-                          DateFormat('MMM dd, HH:mm').format(step.time!),
+                          DateFormat('dd.MM HH:mm').format(step.time!),
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -219,7 +224,7 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActions(BuildContext context) {
+  Widget _buildActions(BuildContext context, AppLocalizations l10n) {
     final canChat = order.status != OrderStatus.cancelled;
     final canCancel = order.status == OrderStatus.pending;
     final canReview = order.status == OrderStatus.completed;
@@ -229,25 +234,25 @@ class OrderDetailScreen extends StatelessWidget {
         if (canChat)
           GradientButton(
             onPressed: () => context.push('/chat/${order.chatId}'),
-            label: 'Chat with Provider',
+            label: l10n.orderChatWithProvider,
             icon: Icons.chat_bubble_outline_rounded,
           ),
         if (canReview) ...[
           const SizedBox(height: 12),
           OutlinedButton.icon(
-            onPressed: () => _showReviewSheet(context),
+            onPressed: () => _showReviewSheet(context, l10n),
             icon: const Icon(Icons.star_rounded),
-            label: const Text('Leave a Review'),
+            label: Text(l10n.orderLeaveReviewBtn),
           ),
         ],
         if (canCancel) ...[
           const SizedBox(height: 12),
           TextButton.icon(
-            onPressed: () => _showCancelDialog(context),
+            onPressed: () => _showCancelDialog(context, l10n),
             icon: const Icon(Icons.cancel_outlined, color: AppColors.error),
-            label: const Text(
-              'Cancel Order',
-              style: TextStyle(color: AppColors.error),
+            label: Text(
+              l10n.orderCancelBtn,
+              style: const TextStyle(color: AppColors.error),
             ),
           ),
         ],
@@ -255,23 +260,21 @@ class OrderDetailScreen extends StatelessWidget {
     );
   }
 
-  void _showCancelDialog(BuildContext context) {
+  void _showCancelDialog(BuildContext context, AppLocalizations l10n) {
     final reasonController = TextEditingController();
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cancel Order'),
+        title: Text(l10n.orderCancelTitle),
         content: TextField(
           controller: reasonController,
-          decoration: const InputDecoration(
-            hintText: 'Reason for cancellation',
-          ),
+          decoration: InputDecoration(hintText: l10n.orderCancelReasonHint),
           maxLines: 3,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Back'),
+            child: Text(l10n.orderBack),
           ),
           ElevatedButton(
             onPressed: () {
@@ -282,14 +285,14 @@ class OrderDetailScreen extends StatelessWidget {
               context.pop();
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('Cancel Order'),
+            child: Text(l10n.orderCancelBtn),
           ),
         ],
       ),
     );
   }
 
-  void _showReviewSheet(BuildContext context) {
+  void _showReviewSheet(BuildContext context, AppLocalizations l10n) {
     double rating = 5.0;
     final commentController = TextEditingController();
     showModalBottomSheet(
@@ -313,7 +316,7 @@ class OrderDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Rate your experience',
+                l10n.orderRateTitle,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 16),
@@ -336,14 +339,12 @@ class OrderDetailScreen extends StatelessWidget {
               const SizedBox(height: 16),
               TextField(
                 controller: commentController,
-                decoration: const InputDecoration(
-                  hintText: 'Write your review...',
-                ),
+                decoration: InputDecoration(hintText: l10n.orderWriteReview),
                 maxLines: 3,
               ),
               const SizedBox(height: 20),
               GradientButton(
-                label: 'Submit Review',
+                label: l10n.orderSubmitReviewBtn,
                 onPressed: () {
                   final review = ReviewEntity(
                     id: '',
@@ -366,6 +367,21 @@ class OrderDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _localizedStatus(OrderStatus status, AppLocalizations l10n) {
+    switch (status) {
+      case OrderStatus.pending:
+        return l10n.orderStatusPending;
+      case OrderStatus.accepted:
+        return l10n.orderStatusAccepted;
+      case OrderStatus.inProgress:
+        return l10n.orderStatusInProgress;
+      case OrderStatus.completed:
+        return l10n.orderStatusCompleted;
+      case OrderStatus.cancelled:
+        return l10n.orderStatusCancelled;
+    }
   }
 }
 

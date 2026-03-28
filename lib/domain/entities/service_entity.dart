@@ -44,11 +44,11 @@ class ServiceEntity extends Equatable {
   String get formattedPrice {
     switch (priceType) {
       case 'hourly':
-        return '\$${price.toStringAsFixed(0)}/hr';
+        return '${price.toStringAsFixed(0)} ₸/сағ';
       case 'from':
-        return 'From \$${price.toStringAsFixed(0)}';
+        return 'бастап ${price.toStringAsFixed(0)} ₸';
       default:
-        return '\$${price.toStringAsFixed(0)}';
+        return '${price.toStringAsFixed(0)} ₸';
     }
   }
 

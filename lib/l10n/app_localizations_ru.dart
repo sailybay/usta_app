@@ -312,4 +312,270 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorRetry => 'Повторить';
+
+  @override
+  String get langKk => 'Казахский';
+
+  @override
+  String get langRu => 'Русский';
+
+  @override
+  String get langEn => 'Английский';
+
+  @override
+  String get settingsLanguage => 'Язык';
+
+  @override
+  String get createOrderTitle => 'Создать заказ';
+
+  @override
+  String get createOrderSchedule => 'Расписание';
+
+  @override
+  String get createOrderDate => 'Дата';
+
+  @override
+  String get createOrderTime => 'Время';
+
+  @override
+  String get createOrderLocation => 'Местоположение';
+
+  @override
+  String get createOrderAddressHint => 'Введите адрес';
+
+  @override
+  String get createOrderPickOnMap => 'Выбрать на карте';
+
+  @override
+  String get createOrderNotes => 'Заметки (необязательно)';
+
+  @override
+  String get createOrderNotesHint => 'Особые требования...';
+
+  @override
+  String get createOrderPayment => 'Способ оплаты';
+
+  @override
+  String get createOrderServiceFee => 'Комиссия (5%)';
+
+  @override
+  String get createOrderTotal => 'Итого';
+
+  @override
+  String get createOrderConfirm => 'Подтвердить заказ';
+
+  @override
+  String get createOrderSuccess => 'Заказ размещён! 🎉';
+
+  @override
+  String get createOrderServicePrice => 'Стоимость услуги';
+
+  @override
+  String get createOrderVia => 'от';
+
+  @override
+  String get workerDashboardTitle => 'Панель мастера';
+
+  @override
+  String workerGreeting(String name) {
+    return 'Привет, $name! 👋';
+  }
+
+  @override
+  String get workerOverview => 'Обзор результатов работы';
+
+  @override
+  String get workerTotalIncome => 'Общий доход';
+
+  @override
+  String get workerCompleted => 'Завершено';
+
+  @override
+  String get workerPendingOrders => 'Ожидающие заказы';
+
+  @override
+  String get workerNoPending => 'Ожидающих заказов нет 🎉';
+
+  @override
+  String get workerAccept => 'Принять';
+
+  @override
+  String get workerView => 'Просмотр';
+
+  @override
+  String get workerIncomeChart => 'Обзор дохода';
+
+  @override
+  String get workerAiSuggestion => 'Рекомендация AI';
+
+  @override
+  String get workerAskAi => 'Спросить AI →';
+
+  @override
+  String get workerStartWork => 'Начать работу';
+
+  @override
+  String get workerCompleteOrder => 'Завершить заказ';
+
+  @override
+  String get workerRejectOrder => 'Отклонить';
+
+  @override
+  String get registerTitle => 'Создать аккаунт ✨';
+
+  @override
+  String get registerSubtitle => 'Присоединяйтесь к Usta App';
+
+  @override
+  String get registerClientRole => 'Клиент';
+
+  @override
+  String get registerWorkerRole => 'Мастер';
+
+  @override
+  String get registerFullName => 'Полное имя';
+
+  @override
+  String get registerFullNameHint => 'Азамат Нурланов';
+
+  @override
+  String get registerNameRequired => 'Имя обязательно';
+
+  @override
+  String get registerPhone => 'Номер телефона';
+
+  @override
+  String get registerPhoneHint => '+7 777 000 0000';
+
+  @override
+  String get registerPhoneRequired => 'Телефон обязателен';
+
+  @override
+  String get registerCreateAccount => 'Создать аккаунт';
+
+  @override
+  String get registerHaveAccount => 'Уже есть аккаунт? ';
+
+  @override
+  String get registerSignIn => 'Войти';
+
+  @override
+  String get loginTitle => 'С возвращением! 👋';
+
+  @override
+  String get loginSubtitle => 'Войдите для продолжения';
+
+  @override
+  String get loginForgotPassword => 'Забыли пароль?';
+
+  @override
+  String get loginResetPassword => 'Сброс пароля';
+
+  @override
+  String get loginEnterEmail => 'Введите вашу электронную почту';
+
+  @override
+  String get loginSendLink => 'Отправить ссылку';
+
+  @override
+  String get loginResetSent => 'Ссылка для сброса пароля отправлена!';
+
+  @override
+  String get loginNoAccount => 'Нет аккаунта? ';
+
+  @override
+  String get loginRegister => 'Зарегистрироваться';
+
+  @override
+  String get orderDetailTitle => 'Детали заказа';
+
+  @override
+  String get orderStatusLabel => 'Статус заказа';
+
+  @override
+  String get orderServiceDetails => 'Детали услуги';
+
+  @override
+  String get orderService => 'Услуга';
+
+  @override
+  String get orderCategory => 'Категория';
+
+  @override
+  String get orderProvider => 'Исполнитель';
+
+  @override
+  String get orderAmount => 'Сумма';
+
+  @override
+  String get orderAddress => 'Адрес';
+
+  @override
+  String get orderNotes => 'Заметки';
+
+  @override
+  String get orderScheduleTitle => 'Расписание';
+
+  @override
+  String get orderTimelineTitle => 'Хронология заказа';
+
+  @override
+  String get orderPlaced => 'Заказ размещён';
+
+  @override
+  String get orderAccepted => 'Принят';
+
+  @override
+  String get orderInProgress => 'Выполняется';
+
+  @override
+  String get orderCompleted => 'Завершён';
+
+  @override
+  String get orderChatWithProvider => 'Чат с исполнителем';
+
+  @override
+  String get orderLeaveReviewBtn => 'Оставить отзыв';
+
+  @override
+  String get orderCancelBtn => 'Отменить заказ';
+
+  @override
+  String get orderCancelTitle => 'Отменить заказ';
+
+  @override
+  String get orderCancelReasonHint => 'Причина отмены';
+
+  @override
+  String get orderBack => 'Назад';
+
+  @override
+  String get orderWriteReview => 'Напишите отзыв...';
+
+  @override
+  String get orderRateTitle => 'Оцените опыт';
+
+  @override
+  String get orderSubmitReviewBtn => 'Отправить отзыв';
+
+  @override
+  String get orderAskAi => 'Спросить AI';
+
+  @override
+  String get ordersMyOrders => 'Мои заказы';
+
+  @override
+  String get ordersActive => 'Активные';
+
+  @override
+  String get ordersCompleted => 'Завершённые';
+
+  @override
+  String get ordersCancelled => 'Отменённые';
+
+  @override
+  String get ordersNoOrders => 'Заказов нет';
+
+  @override
+  String get ordersMadeBy => 'от';
 }

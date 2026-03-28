@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/review_model.dart';
 import '../../core/constants/app_constants.dart';
 import '../../domain/entities/review_entity.dart';
+import '../../domain/repositories/review_repository_interface.dart';
 
-class ReviewRepository {
+class ReviewRepository implements ReviewRepositoryInterface {
   final _firestore = FirebaseFirestore.instance;
 
+  @override
   Future<String> createReview(ReviewEntity review) async {
     final model = ReviewModel.fromEntity(review);
     final ref = await _firestore
@@ -14,6 +16,7 @@ class ReviewRepository {
     return ref.id;
   }
 
+  @override
   Future<List<ReviewEntity>> getWorkerReviews(String workerId) async {
     final result = await _firestore
         .collection(AppConstants.reviewsCollection)
@@ -25,6 +28,7 @@ class ReviewRepository {
         .toList();
   }
 
+  @override
   Future<void> updateWorkerRating(String workerId, double rating) async {
     await _firestore
         .collection(AppConstants.usersCollection)

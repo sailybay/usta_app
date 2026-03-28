@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/order_entity.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/order/order_bloc.dart';
 import '../../widgets/order_status_badge.dart';
@@ -37,19 +38,20 @@ class _OrdersScreenState extends State<OrdersScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Orders'),
+        title: Text(l10n.ordersMyOrders),
         bottom: TabBar(
           controller: _tabController,
           labelColor: AppColors.primary,
           unselectedLabelColor: AppColors.textHint,
           indicatorColor: AppColors.primary,
           indicatorSize: TabBarIndicatorSize.tab,
-          tabs: const [
-            Tab(text: 'Active'),
-            Tab(text: 'Completed'),
-            Tab(text: 'Cancelled'),
+          tabs: [
+            Tab(text: l10n.ordersActive),
+            Tab(text: l10n.ordersCompleted),
+            Tab(text: l10n.ordersCancelled),
           ],
         ),
       ),
@@ -61,14 +63,16 @@ class _OrdersScreenState extends State<OrdersScreen>
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: Colors.green,
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
               ),
             );
           } else if (state is OrderError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
-                backgroundColor: Colors.red,
+                backgroundColor: AppColors.error,
+                behavior: SnackBarBehavior.floating,
               ),
             );
           }
@@ -98,13 +102,13 @@ class _OrdersScreenState extends State<OrdersScreen>
             return TabBarView(
               controller: _tabController,
               children: [
-                _OrderList(orders: active),
-                _OrderList(orders: completed),
-                _OrderList(orders: cancelled),
+                _OrderList(orders: active, l10n: l10n),
+                _OrderList(orders: completed, l10n: l10n),
+                _OrderList(orders: cancelled, l10n: l10n),
               ],
             );
           }
-          return const Center(child: Text('No orders yet.'));
+          return Center(child: Text(l10n.ordersNoOrders));
         },
       ),
     );
@@ -113,7 +117,8 @@ class _OrdersScreenState extends State<OrdersScreen>
 
 class _OrderList extends StatelessWidget {
   final List<OrderEntity> orders;
-  const _OrderList({required this.orders});
+  final AppLocalizations l10n;
+  const _OrderList({required this.orders, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -122,14 +127,14 @@ class _OrderList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.receipt_long_outlined,
               size: 72,
               color: AppColors.textHint,
             ),
             const SizedBox(height: 12),
             Text(
-              'No orders here',
+              l10n.ordersNoOrders,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: AppColors.textHint),
@@ -143,14 +148,16 @@ class _OrderList extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       itemCount: orders.length,
       separatorBuilder: (_, _) => const SizedBox(height: 12),
-      itemBuilder: (context, index) => _OrderCard(order: orders[index]),
+      itemBuilder: (context, index) =>
+          _OrderCard(order: orders[index], l10n: l10n),
     );
   }
 }
 
 class _OrderCard extends StatelessWidget {
   final OrderEntity order;
-  const _OrderCard({required this.order});
+  final AppLocalizations l10n;
+  const _OrderCard({required this.order, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +195,7 @@ class _OrderCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'by ${order.workerName}',
+              '${l10n.ordersMadeBy} ${order.workerName}',
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
@@ -203,12 +210,12 @@ class _OrderCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  DateFormat('MMM dd, yyyy – HH:mm').format(order.scheduledAt),
+                  DateFormat('dd.MM.yyyy – HH:mm').format(order.scheduledAt),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const Spacer(),
                 Text(
-                  '\$${order.amount.toStringAsFixed(2)}',
+                  '${order.amount.toStringAsFixed(0)} ₸',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w800,

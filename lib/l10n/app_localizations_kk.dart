@@ -313,4 +313,271 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get errorRetry => 'Қайталау';
+
+  @override
+  String get langKk => 'Қазақша';
+
+  @override
+  String get langRu => 'Орысша';
+
+  @override
+  String get langEn => 'Ағылшынша';
+
+  @override
+  String get settingsLanguage => 'Тіл';
+
+  @override
+  String get createOrderTitle => 'Тапсырыс беру';
+
+  @override
+  String get createOrderSchedule => 'Кесте';
+
+  @override
+  String get createOrderDate => 'Күн';
+
+  @override
+  String get createOrderTime => 'Уақыт';
+
+  @override
+  String get createOrderLocation => 'Орналасуы';
+
+  @override
+  String get createOrderAddressHint => 'Мекенжайды енгізіңіз';
+
+  @override
+  String get createOrderPickOnMap => 'Картадан таңдау';
+
+  @override
+  String get createOrderNotes => 'Ескертпелер (міндетті емес)';
+
+  @override
+  String get createOrderNotesHint => 'Арнайы талаптар...';
+
+  @override
+  String get createOrderPayment => 'Төлем әдісі';
+
+  @override
+  String get createOrderServiceFee => 'Қызмет ақысы (5%)';
+
+  @override
+  String get createOrderTotal => 'Жиыны';
+
+  @override
+  String get createOrderConfirm => 'Тапсырысты растау';
+
+  @override
+  String get createOrderSuccess => 'Тапсырыс орналастырылды! 🎉';
+
+  @override
+  String get createOrderServicePrice => 'Қызмет бағасы';
+
+  @override
+  String get createOrderVia => 'арқылы';
+
+  @override
+  String get workerDashboardTitle => 'Маман бақылау тақтасы';
+
+  @override
+  String workerGreeting(String name) {
+    return 'Сәлем, $name! 👋';
+  }
+
+  @override
+  String get workerOverview => 'Жұмыс нәтижелеріңіздің шолуы';
+
+  @override
+  String get workerTotalIncome => 'Жалпы табыс';
+
+  @override
+  String get workerCompleted => 'Аяқталды';
+
+  @override
+  String get workerPendingOrders => 'Күтіп тұрған тапсырыстар';
+
+  @override
+  String get workerNoPending => 'Күтіп тұрған тапсырыстар жоқ 🎉';
+
+  @override
+  String get workerAccept => 'Қабылдау';
+
+  @override
+  String get workerView => 'Қарау';
+
+  @override
+  String get workerIncomeChart => 'Табыс шолуы';
+
+  @override
+  String get workerAiSuggestion => 'AI Ұсынысы';
+
+  @override
+  String get workerAskAi => 'AI-дан кеңес сұрау →';
+
+  @override
+  String get workerStartWork => 'Жұмысты бастау';
+
+  @override
+  String get workerCompleteOrder => 'Тапсырысты аяқтау';
+
+  @override
+  String get workerRejectOrder => 'Бас тарту';
+
+  @override
+  String get registerTitle => 'Аккаунт жасау ✨';
+
+  @override
+  String get registerSubtitle => 'Ұста Қосымшасына қосылыңыз';
+
+  @override
+  String get registerClientRole => 'Клиент';
+
+  @override
+  String get registerWorkerRole => 'Маман';
+
+  @override
+  String get registerFullName => 'Толық аты';
+
+  @override
+  String get registerFullNameHint => 'Азамат Нұрланов';
+
+  @override
+  String get registerNameRequired => 'Аты қажет';
+
+  @override
+  String get registerPhone => 'Телефон нөмірі';
+
+  @override
+  String get registerPhoneHint => '+7 777 000 0000';
+
+  @override
+  String get registerPhoneRequired => 'Телефон қажет';
+
+  @override
+  String get registerCreateAccount => 'Аккаунт жасау';
+
+  @override
+  String get registerHaveAccount => 'Аккаунт бар ма? ';
+
+  @override
+  String get registerSignIn => 'Кіру';
+
+  @override
+  String get loginTitle => 'Қайта оралдыңыз! 👋';
+
+  @override
+  String get loginSubtitle => 'Жалғастыру үшін кіріңіз';
+
+  @override
+  String get loginForgotPassword => 'Құпия сөзді ұмыттыңыз ба?';
+
+  @override
+  String get loginResetPassword => 'Құпия сөзді қалпына келтіру';
+
+  @override
+  String get loginEnterEmail => 'Электрондық поштаңызды енгізіңіз';
+
+  @override
+  String get loginSendLink => 'Сілтемені жіберу';
+
+  @override
+  String get loginResetSent =>
+      'Құпия сөзді қалпына келтіру сілтемесі жіберілді!';
+
+  @override
+  String get loginNoAccount => 'Аккаунт жоқ па? ';
+
+  @override
+  String get loginRegister => 'Тіркелу';
+
+  @override
+  String get orderDetailTitle => 'Тапсырыс мәліметтері';
+
+  @override
+  String get orderStatusLabel => 'Тапсырыс күйі';
+
+  @override
+  String get orderServiceDetails => 'Қызмет мәліметтері';
+
+  @override
+  String get orderService => 'Қызмет';
+
+  @override
+  String get orderCategory => 'Санат';
+
+  @override
+  String get orderProvider => 'Маман';
+
+  @override
+  String get orderAmount => 'Сома';
+
+  @override
+  String get orderAddress => 'Мекенжай';
+
+  @override
+  String get orderNotes => 'Ескертпелер';
+
+  @override
+  String get orderScheduleTitle => 'Кесте';
+
+  @override
+  String get orderTimelineTitle => 'Тапсырыс уақыт желісі';
+
+  @override
+  String get orderPlaced => 'Тапсырыс берілді';
+
+  @override
+  String get orderAccepted => 'Қабылданды';
+
+  @override
+  String get orderInProgress => 'Орындалуда';
+
+  @override
+  String get orderCompleted => 'Аяқталды';
+
+  @override
+  String get orderChatWithProvider => 'Мамандармен чат';
+
+  @override
+  String get orderLeaveReviewBtn => 'Пікір қалдыру';
+
+  @override
+  String get orderCancelBtn => 'Тапсырысты бас тарту';
+
+  @override
+  String get orderCancelTitle => 'Тапсырысты бас тарту';
+
+  @override
+  String get orderCancelReasonHint => 'Бас тарту себебі';
+
+  @override
+  String get orderBack => 'Артқа';
+
+  @override
+  String get orderWriteReview => 'Пікіріңізді жазыңыз...';
+
+  @override
+  String get orderRateTitle => 'Тәжірибеңізді бағалаңыз';
+
+  @override
+  String get orderSubmitReviewBtn => 'Пікір жіберу';
+
+  @override
+  String get orderAskAi => 'AI-дан сұрау';
+
+  @override
+  String get ordersMyOrders => 'Менің тапсырыстарым';
+
+  @override
+  String get ordersActive => 'Белсенді';
+
+  @override
+  String get ordersCompleted => 'Аяқталған';
+
+  @override
+  String get ordersCancelled => 'Бас тартылған';
+
+  @override
+  String get ordersNoOrders => 'Тапсырыстар жоқ';
+
+  @override
+  String get ordersMadeBy => 'арқылы';
 }

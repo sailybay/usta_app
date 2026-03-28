@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/user_entity.dart';
-import '../../../data/repositories/auth_repository.dart';
+import '../../../domain/repositories/auth_repository_interface.dart';
 
 // ─── Events ───────────────────────────────────────────────────────────────────
 abstract class AuthEvent extends Equatable {
@@ -75,9 +75,9 @@ class AuthPasswordResetSent extends AuthState {}
 
 // ─── BLoC ─────────────────────────────────────────────────────────────────────
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _authRepository;
+  final AuthRepositoryInterface _authRepository;
 
-  AuthBloc({required AuthRepository authRepository})
+  AuthBloc({required AuthRepositoryInterface authRepository})
     : _authRepository = authRepository,
       super(AuthInitial()) {
     on<AuthCheckRequested>(_onCheckRequested);
