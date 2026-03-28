@@ -1,0 +1,188 @@
+{
+  "@@locale": "kk",
+
+  "appName": "Ұста Қосымшасы",
+  "@appName": { "description": "Application name" },
+
+  "homeGreetingMorning": "Қайырлы таң! 👋",
+  "@homeGreetingMorning": { "description": "Morning greeting on home screen" },
+
+  "homeGreetingAfternoon": "Қайырлы күн! 👋",
+  "@homeGreetingAfternoon": { "description": "Afternoon greeting" },
+
+  "homeGreetingEvening": "Қайырлы кеш! 👋",
+  "@homeGreetingEvening": { "description": "Evening greeting" },
+
+  "homeFindService": "Қызмет табу",
+  "@homeFindService": { "description": "Subtitle on home screen" },
+
+  "homeSearchHint": "Қызметтер, мамандар...",
+  "@homeSearchHint": { "description": "Search bar hint text" },
+
+  "homePopularServices": "Танымал қызметтер",
+  "@homePopularServices": { "description": "Section header" },
+
+  "homeSeeAll": "Барлығы",
+  "@homeSeeAll": { "description": "See all button" },
+
+  "homeNoServices": "Қызметтер табылмады",
+  "@homeNoServices": { "description": "Empty state text" },
+
+  "homeSortBy": "Сұрыптау",
+  "@homeSortBy": { "description": "Sort filter label" },
+
+  "homeSortRating": "Жоғары рейтинг",
+  "@homeSortRating": { "description": "Sort by rating option" },
+
+  "homeSortPriceLow": "Баға: өсу бойынша",
+  "@homeSortPriceLow": { "description": "Sort price ascending" },
+
+  "homeSortPriceHigh": "Баға: кему бойынша",
+  "@homeSortPriceHigh": { "description": "Sort price descending" },
+
+  "homeApply": "Қолдану",
+  "@homeApply": { "description": "Apply filter button" },
+
+  "catAll": "Барлығы",
+  "catCleaning": "Тазалық",
+  "catRepair": "Жөндеу",
+  "catDelivery": "Жеткізу",
+  "catTutoring": "Репетитор",
+  "catBeauty": "Сұлулық",
+  "catPlumbing": "Сантехника",
+
+  "navHome": "Басты",
+  "@navHome": { "description": "Bottom nav home tab" },
+
+  "navOrders": "Тапсырыстар",
+  "@navOrders": { "description": "Bottom nav orders tab" },
+
+  "navAiHelp": "AI Көмек",
+  "@navAiHelp": { "description": "Bottom nav AI tab" },
+
+  "navProfile": "Профиль",
+  "@navProfile": { "description": "Bottom nav profile tab" },
+
+  "authWelcomeBack": "Қайта оралдыңыз! 👋",
+  "@authWelcomeBack": { "description": "Login screen heading" },
+
+  "authSignInContinue": "Жалғастыру үшін кіріңіз",
+  "@authSignInContinue": { "description": "Login screen subtitle" },
+
+  "authEmailLabel": "Электрондық пошта",
+  "@authEmailLabel": { "description": "Email field label" },
+
+  "authEmailHint": "email@example.com",
+  "authEmailRequired": "Электрондық пошта қажет",
+  "authEmailInvalid": "Дұрыс электрондық пошта енгізіңіз",
+
+  "authPasswordLabel": "Құпия сөз",
+  "@authPasswordLabel": { "description": "Password field label" },
+
+  "authPasswordHint": "••••••••",
+  "authPasswordRequired": "Құпия сөз қажет",
+  "authPasswordTooShort": "Құпия сөз кемінде 6 таңба болуы керек",
+
+  "authForgotPassword": "Құпия сөзді ұмыттыңыз ба?",
+  "@authForgotPassword": { "description": "Forgot password link" },
+
+  "authSignIn": "Кіру",
+  "@authSignIn": { "description": "Sign in button" },
+
+  "authNoAccount": "Аккаунт жоқ па? ",
+  "@authNoAccount": { "description": "Register prompt text" },
+
+  "authRegister": "Тіркелу",
+  "@authRegister": { "description": "Register link" },
+
+  "authResetTitle": "Құпия сөзді қалпына келтіру",
+  "@authResetTitle": { "description": "Reset password dialog title" },
+
+  "authResetSend": "Сілтемені жіберу",
+  "@authResetSend": { "description": "Send reset link button" },
+
+  "authResetSent": "Құпия сөзді қалпына келтіру сілтемесі жіберілді!",
+  "@authResetSent": { "description": "Confirmation snackbar" },
+
+  "authCancel": "Болдырмау",
+  "@authCancel": { "description": "Cancel button" },
+
+  "ordersTitle": "Менің тапсырыстарым",
+  "@ordersTitle": { "description": "Orders screen title" },
+
+  "ordersTabActive": "Белсенді",
+  "ordersTabCompleted": "Аяқталған",
+  "ordersTabCancelled": "Бас тартылған",
+  "ordersEmpty": "Тапсырыстар жоқ",
+
+  "orderStatusPending": "Күтуде",
+  "orderStatusAccepted": "Қабылданды",
+  "orderStatusInProgress": "Орындалуда",
+  "orderStatusCompleted": "Аяқталды",
+  "orderStatusCancelled": "Бас тартылды",
+
+  "orderDetails": "Тапсырыс мәліметтері",
+  "orderChatProvider": "Мамандармен сөйлесу",
+  "orderLeaveReview": "Пікір қалдыру",
+  "orderCancelOrder": "Тапсырысты бас тарту",
+  "orderCancelReason": "Бас тарту себебі",
+  "orderRateExperience": "Тәжірибеңізді бағалаңыз",
+  "orderSubmitReview": "Пікір жіберу",
+  "orderReviewSubmitted": "Пікір жіберілді. Рақмет!",
+  "orderUpdated": "Тапсырыс күйі жаңартылды.",
+  "orderCancelled": "Тапсырыс бас тартылды.",
+
+  "profileTitle": "Профиль",
+  "@profileTitle": { "description": "Profile screen title" },
+
+  "profileRating": "Рейтинг",
+  "profileReviews": "Пікірлер",
+  "profileRole": "Рөл",
+  "profileRoleWorker": "Маман",
+  "profileRoleClient": "Клиент",
+
+  "profileSectionAccount": "Аккаунт",
+  "profileEditProfile": "Профильді өзгерту",
+  "profileSavedAddresses": "Сақталған мекенжайлар",
+  "profilePaymentMethods": "Төлем әдістері",
+
+  "profileSectionWorker": "Маман",
+  "profileDashboard": "Бақылау тақтасы",
+  "profileSchedule": "Кестем",
+
+  "profileSectionSupport": "Қолдау",
+  "profileAiAssistant": "AI Көмекші",
+  "profileHelp": "Анықтама және сұрақтар",
+  "profileTerms": "Шарттар және құпиялылық",
+  "profileSignOut": "Шығу",
+
+  "serviceDetail": "Қызмет мәліметтері",
+  "serviceProvider": "Қызмет көрсетуші",
+  "serviceAbout": "Қызмет туралы",
+  "serviceBookNow": "Брондау — {price}",
+  "@serviceBookNow": {
+    "placeholders": {
+      "price": { "type": "String" }
+    }
+  },
+
+  "comingSoon": "Жақында қосылады!",
+  "@comingSoon": { "description": "Feature coming soon snackbar" },
+
+  "onboardingTitle1": "Сенімді мамандарды табыңыз",
+  "onboardingSubtitle1": "Жөндеу, тазалық, репетитор және басқа да тексерілген мамандар.",
+  "onboardingTitle2": "Бірнеше секундта брондаңыз",
+  "onboardingSubtitle2": "Ыңғайлы уақытта және жерде қызметті жоспарлаңыз. Тапсырыңызды нақты уақытта бақылаңыз.",
+  "onboardingTitle3": "AI Көмекші",
+  "onboardingSubtitle3": "Ақылды AI сізді брондаудан төлемге дейін бағыттайды.",
+  "onboardingSkip": "Өткізу",
+  "onboardingNext": "Келесі",
+  "onboardingGetStarted": "Бастау",
+
+  "mapTitle": "Мекенжайды таңдаңыз",
+  "mapConfirm": "Растау",
+
+  "errorGeneric": "Қате орын алды. Қайталап көріңіз.",
+  "errorNoInternet": "Интернет байланысы жоқ.",
+  "errorRetry": "Қайталау"
+}

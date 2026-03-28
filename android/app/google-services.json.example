@@ -1,0 +1,30 @@
+{
+  "_comment": "Скопируйте этот файл как google-services.json и заполните данными из Firebase Console",
+  "_comment2": "Firebase Console → Project Settings → Your apps → google-services.json",
+  "project_info": {
+    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_id": "YOUR_PROJECT_ID",
+    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:YOUR_PROJECT_NUMBER:android:YOUR_APP_ID",
+        "android_client_info": {
+          "package_name": "com.example.usta_app"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "YOUR_FIREBASE_API_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

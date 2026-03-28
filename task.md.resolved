@@ -1,0 +1,27 @@
+# Usta App Development Task List
+
+- [ ] **Phase 1: Setup & Architecture**
+    - [/] Initialize project structure (MVVM layers)
+    - [ ] Configure [pubspec.yaml](file:///c:/Users/baga.HOME-PC/development/diploma_project/usta_app/pubspec.yaml) with required dependencies (Firebase, Riverpod, etc.)
+    - [ ] Setup Firebase configuration (Auth, Firestore, Cloud Functions)
+- [ ] **Phase 2: Data Models & Repositories**
+    - [ ] Create Data Models (User, Service, Order, Review, Payment)
+    - [ ] Implement Firebase Repositories
+- [ ] **Phase 3: Domain Layer & State Management**
+    - [ ] Implement Use Cases (Order Creation, Payment Processing)
+    - [ ] Setup Riverpod Providers for ViewModels
+- [ ] **Phase 4: AI Assistant Integration**
+    - [ ] Design AI Logic module (Gemini API / Cloud Functions)
+    - [ ] Implement AI Support & Recommendation logic
+- [ ] **Phase 5: UI Development (Adaptive & Responsive)**
+    - [ ] Auth Screens (Login/Reg)
+    - [ ] Client Flow (Service Catalog, Search, Merchant Profile)
+    - [ ] Merchant Flow (Dashboard, Order Management)
+    - [ ] Shared Components (Chat, Map, AI Chat Interface)
+- [ ] **Phase 6: Integration & Verification**
+    - [ ] Integrate Maps (Yandex/Google)
+    - [ ] Implement Push Notifications
+    - [ ] Security Rules for Firestore & Auth
+- [ ] **Phase 7: Documentation**
+    - [ ] Technical documentation for diploma
+    - [ ] Walkthrough of the application
