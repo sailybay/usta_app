@@ -1,16 +1,13 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:usta_app/core/theme/app_colors.dart';
 import 'package:usta_app/core/router/app_router.dart';
-import 'package:usta_app/domain/entities/order_entity.dart';
 import 'package:usta_app/data/repositories/order_repository.dart';
-import 'package:usta_app/presentation/blocs/auth/auth_bloc.dart';
-import 'package:usta_app/presentation/blocs/order/order_bloc.dart';
-import 'package:usta_app/presentation/blocs/ai/ai_bloc.dart';
-import 'package:usta_app/presentation/widgets/order_status_badge.dart';
-//import 'package:usta_app/presentation/widgets/gradient_button.dart';
+import 'package:usta_app/domain/entities/order_entity.dart';
+import 'package:usta_app/presentation/blocs/blocs.dart';
+import 'widgets/worker_widgets.dart';
 
 class WorkerDashboardScreen extends StatefulWidget {
   const WorkerDashboardScreen({super.key});
@@ -30,7 +27,6 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     if (authState is AuthAuthenticated) {
       context.read<OrderBloc>().add(OrderLoadWorkerOrders(authState.user.id));
       _loadAnalytics(authState.user.id);
-      // Load AI suggestion
       context.read<AiBloc>().add(
         AiGetWorkerSuggestion(
           completedOrders: 0,
@@ -44,27 +40,24 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
   Future<void> _loadAnalytics(String workerId) async {
     final repo = OrderRepository();
     final data = await repo.getWorkerAnalytics(workerId);
-    if (mounted) {
-      setState(() {
-        _analytics = data;
-        _loadingAnalytics = false;
-      });
-      // Update AI with real data
-      context.read<AiBloc>().add(
-        AiGetWorkerSuggestion(
-          completedOrders: data['totalOrders'] ?? 0,
-          rating:
-              (context.read<AuthBloc>().state as AuthAuthenticated).user.rating,
-          totalIncome: data['totalIncome'] ?? 0,
-        ),
-      );
-    }
+    if (!mounted) return;
+    setState(() {
+      _analytics = data;
+      _loadingAnalytics = false;
+    });
+    context.read<AiBloc>().add(
+      AiGetWorkerSuggestion(
+        completedOrders: data['totalOrders'] ?? 0,
+        rating:
+            (context.read<AuthBloc>().state as AuthAuthenticated).user.rating,
+        totalIncome: data['totalIncome'] ?? 0,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = context.read<AuthBloc>().state as AuthAuthenticated;
-    final user = authState.user;
+    final user = (context.read<AuthBloc>().state as AuthAuthenticated).user;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,43 +77,22 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Greeting
-              Text(
-                'Hello, ${user.name}! 👋',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Here\'s your performance overview',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
+              _buildHeader(context, user.name),
               const SizedBox(height: 20),
-
-              // Stats row
-              if (!_loadingAnalytics) _buildStatsRow(context),
-              if (_loadingAnalytics)
-                const Center(child: CircularProgressIndicator()),
+              _buildStats(context),
               const SizedBox(height: 20),
-
-              // Income chart
               if (!_loadingAnalytics &&
-                  (_analytics['incomeByMonth'] as Map).isNotEmpty)
+                  (_analytics['incomeByMonth'] as Map? ?? {}).isNotEmpty)
                 _buildIncomeChart(context),
               const SizedBox(height: 20),
-
-              // AI Suggestion
               _buildAiSuggestion(context),
               const SizedBox(height: 20),
-
-              // Pending orders
               Text(
-                'Pending Orders',
+                'Ожидающие заказы',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
               const SizedBox(height: 12),
-              _buildPendingOrders(context),
+              _buildPendingOrders(),
               const SizedBox(height: 80),
             ],
           ),
@@ -129,18 +101,42 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     );
   }
 
-  Widget _buildStatsRow(BuildContext context) {
+  // ─── Section builders ──────────────────────────────────────────────────────
+
+  Widget _buildHeader(BuildContext context, String name) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Сәлем, $name! 👋',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Жұмыс нәтижелеріңіздің шолуы',
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStats(BuildContext context) {
+    if (_loadingAnalytics) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Row(
       children: [
-        _DashboardStatCard(
-          label: 'Total Income',
+        DashboardStatCard(
+          label: 'Жалпы табыс',
           value: '\$${(_analytics['totalIncome'] ?? 0).toStringAsFixed(2)}',
           icon: Icons.attach_money_rounded,
           gradient: AppColors.successGradient,
         ),
         const SizedBox(width: 12),
-        _DashboardStatCard(
-          label: 'Completed',
+        DashboardStatCard(
+          label: 'Аяқталды',
           value: (_analytics['totalOrders'] ?? 0).toString(),
           icon: Icons.check_circle_rounded,
           gradient: AppColors.primaryGradient,
@@ -152,34 +148,30 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
   Widget _buildIncomeChart(BuildContext context) {
     final incomeByMonth = _analytics['incomeByMonth'] as Map<String, double>;
     final sortedKeys = incomeByMonth.keys.toList()..sort();
-    final spots = <FlSpot>[];
-    for (int i = 0; i < sortedKeys.length; i++) {
-      spots.add(FlSpot(i.toDouble(), incomeByMonth[sortedKeys[i]]!));
-    }
+    final spots = <FlSpot>[
+      for (int i = 0; i < sortedKeys.length; i++)
+        FlSpot(i.toDouble(), incomeByMonth[sortedKeys[i]]!),
+    ];
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Income Overview',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          Text('Табыс шолуы', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 20),
           SizedBox(
             height: 160,
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(
-                  show: true,
                   drawVerticalLine: false,
-                  getDrawingHorizontalLine: (value) =>
+                  getDrawingHorizontalLine: (_) =>
                       FlLine(color: AppColors.border, strokeWidth: 1),
                 ),
                 titlesData: const FlTitlesData(
@@ -233,7 +225,6 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
         final aiMessages = state.messages.where((m) => !m.isUser).toList();
         if (aiMessages.isEmpty) return const SizedBox();
 
-        final suggestion = aiMessages.last.content;
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -252,7 +243,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
                   ),
                   SizedBox(width: 8),
                   Text(
-                    'AI Recommendation',
+                    'AI Ұсынысы',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -263,7 +254,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                suggestion,
+                aiMessages.last.content,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.9),
                   fontSize: 13,
@@ -274,7 +265,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
               GestureDetector(
                 onTap: () => context.push(AppRouter.aiChat),
                 child: Text(
-                  'Ask AI for more tips →',
+                  'AI-дан кеңес сұрау →',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.7),
                     fontWeight: FontWeight.w600,
@@ -291,166 +282,38 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     );
   }
 
-  Widget _buildPendingOrders(BuildContext context) {
+  Widget _buildPendingOrders() {
     return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, state) {
-        if (state is OrdersLoaded) {
-          final pending = state.orders
-              .where((o) => o.status == OrderStatus.pending)
-              .toList();
+        if (state is OrderLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is! OrdersLoaded) return const SizedBox();
 
-          if (pending.isEmpty) {
-            return Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AppColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Center(
-                child: Text(
-                  'No pending orders ',
-                  style: TextStyle(color: AppColors.textHint),
-                ),
-              ),
-            );
-          }
+        final pending = state.orders
+            .where((o) => o.status == OrderStatus.pending)
+            .toList();
 
-          return Column(
-            children: pending
-                .map((order) => _PendingOrderCard(order: order))
-                .toList(),
+        if (pending.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceVariant,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Center(
+              child: Text(
+                'Ожидающих заказов нет 🎉',
+                style: TextStyle(color: AppColors.textHint),
+              ),
+            ),
           );
         }
-        return const Center(child: CircularProgressIndicator());
+
+        return Column(
+          children: pending.map((o) => PendingOrderCard(order: o)).toList(),
+        );
       },
-    );
-  }
-}
-
-class _DashboardStatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final LinearGradient gradient;
-  const _DashboardStatCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.gradient,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: gradient,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white, size: 32),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    value,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 20,
-                    ),
-                  ),
-                  Text(
-                    label,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _PendingOrderCard extends StatelessWidget {
-  final OrderEntity order;
-  const _PendingOrderCard({required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  order.serviceName,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              OrderStatusBadge(status: order.status),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Client: ${order.clientName}',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 13,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    context.read<OrderBloc>().add(
-                      OrderUpdateStatus(order.id, OrderStatus.accepted),
-                    );
-                  },
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 40),
-                    side: const BorderSide(color: AppColors.primary),
-                  ),
-                  child: const Text('Accept'),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () =>
-                      context.push('/order/${order.id}', extra: order),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(0, 40),
-                  ),
-                  child: const Text('View'),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

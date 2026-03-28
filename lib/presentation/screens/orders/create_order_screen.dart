@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:intl/intl.dart';
-import '../../../core/theme/app_colors.dart';
-import '../../../core/router/app_router.dart';
-import '../../../domain/entities/service_entity.dart';
-import '../../../domain/entities/order_entity.dart';
-import '../../../data/models/payment_model.dart';
-import '../../blocs/auth/auth_bloc.dart';
-import '../../blocs/order/order_bloc.dart';
-import '../../widgets/gradient_button.dart';
-import '../map/location_picker_screen.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:usta_app/core/theme/app_colors.dart';
+import 'package:usta_app/core/router/app_router.dart';
+import 'package:usta_app/data/models/payment_model.dart';
+import 'package:usta_app/domain/entities/entities.dart';
+import 'package:usta_app/presentation/blocs/blocs.dart';
+import 'package:usta_app/presentation/widgets/gradient_button.dart';
+import 'package:usta_app/presentation/screens/map/location_picker_screen.dart';
+import 'widgets/order_form_widgets.dart';
 
 class CreateOrderScreen extends StatefulWidget {
   final ServiceEntity service;
@@ -35,6 +34,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     _notesController.dispose();
     super.dispose();
   }
+
+  // ─── Actions ───────────────────────────────────────────────────────────────
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -80,7 +81,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     }
   }
 
-  void _createOrder() {
+  void _confirmOrder() {
     final authState = context.read<AuthBloc>().state;
     if (authState is! AuthAuthenticated) return;
     final user = authState.user;
@@ -116,129 +117,32 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     context.read<OrderBloc>().add(OrderCreate(order));
   }
 
+  // ─── Build ─────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Order')),
+      appBar: AppBar(title: const Text('Тапсырыс беру')),
       body: BlocListener<OrderBloc, OrderState>(
-        listener: (context, state) {
-          if (state is OrderCreated) {
-            context.go(AppRouter.orders);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Order placed successfully! 🎉'),
-                backgroundColor: AppColors.success,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          } else if (state is OrderError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: AppColors.error,
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
+        listener: _handleOrderState,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Service summary card
               _buildServiceSummary(),
               const SizedBox(height: 24),
-
-              Text('Schedule', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(child: _buildDatePicker()),
-                  const SizedBox(width: 12),
-                  Expanded(child: _buildTimePicker()),
-                ],
-              ),
+              _buildScheduleSection(context),
               const SizedBox(height: 24),
-
-              Text('Location', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _addressController,
-                decoration: InputDecoration(
-                  hintText: 'Enter your address',
-                  prefixIcon: const Icon(Icons.location_on_outlined),
-                  suffixIcon: Tooltip(
-                    message: 'Выбрать на карте',
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.map_rounded,
-                        color: AppColors.primary,
-                      ),
-                      onPressed: _pickLocationOnMap,
-                    ),
-                  ),
-                ),
-                maxLines: 2,
-              ),
-              if (_pickedLatLng != null) ...[
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle_rounded,
-                      size: 14,
-                      color: AppColors.success,
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Координаты: ${_pickedLatLng!.latitude.toStringAsFixed(5)}, '
-                      '${_pickedLatLng!.longitude.toStringAsFixed(5)}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              _buildLocationSection(context),
               const SizedBox(height: 24),
-
-              Text(
-                'Notes (optional)',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _notesController,
-                decoration: const InputDecoration(
-                  hintText: 'Any specific requirements...',
-                  prefixIcon: Icon(Icons.note_outlined),
-                ),
-                maxLines: 3,
-              ),
+              _buildNotesSection(context),
               const SizedBox(height: 24),
-
-              Text(
-                'Payment Method',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              const SizedBox(height: 12),
-              _buildPaymentSelector(),
+              _buildPaymentSection(context),
               const SizedBox(height: 32),
-
-              // Price breakdown
               _buildPriceBreakdown(),
               const SizedBox(height: 24),
-
-              BlocBuilder<OrderBloc, OrderState>(
-                builder: (context, state) => GradientButton(
-                  onPressed: state is OrderLoading ? null : _createOrder,
-                  isLoading: state is OrderLoading,
-                  label: 'Confirm Order',
-                  icon: Icons.check_circle_rounded,
-                ),
-              ),
+              _buildSubmitButton(),
               const SizedBox(height: 24),
             ],
           ),
@@ -246,6 +150,31 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       ),
     );
   }
+
+  // ─── Event listener ────────────────────────────────────────────────────────
+
+  void _handleOrderState(BuildContext context, OrderState state) {
+    if (state is OrderCreated) {
+      context.go(AppRouter.orders);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Тапсырыс орналастырылды! 🎉'),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else if (state is OrderError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.message),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
+  // ─── Section builders ──────────────────────────────────────────────────────
 
   Widget _buildServiceSummary() {
     return Container(
@@ -284,7 +213,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'by ${widget.service.workerName}',
+                  '${widget.service.workerName} арқылы',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.8),
                     fontSize: 13,
@@ -306,158 +235,115 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     );
   }
 
-  Widget _buildDatePicker() {
-    return GestureDetector(
-      onTap: _pickDate,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildScheduleSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Кесте', style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 12),
+        Row(
           children: [
-            const Row(
-              children: [
-                Icon(
-                  Icons.calendar_month_rounded,
-                  size: 16,
-                  color: AppColors.primary,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  'Date',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              DateFormat('MMM dd, yyyy').format(_selectedDate),
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTimePicker() {
-    return GestureDetector(
-      onTap: _pickTime,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.surfaceVariant,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
-              children: [
-                Icon(
-                  Icons.access_time_rounded,
-                  size: 16,
-                  color: AppColors.primary,
-                ),
-                SizedBox(width: 6),
-                Text(
-                  'Time',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              _selectedTime.format(context),
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPaymentSelector() {
-    final methods = [
-      {
-        'value': PaymentMethod.card,
-        'label': 'Card',
-        'icon': Icons.credit_card_rounded,
-      },
-      {
-        'value': PaymentMethod.cash,
-        'label': 'Cash',
-        'icon': Icons.money_rounded,
-      },
-      {
-        'value': PaymentMethod.wallet,
-        'label': 'Wallet',
-        'icon': Icons.account_balance_wallet_rounded,
-      },
-    ];
-
-    return Row(
-      children: methods.map((m) {
-        final isSelected = _selectedPayment == m['value'];
-        return Expanded(
-          child: GestureDetector(
-            onTap: () =>
-                setState(() => _selectedPayment = m['value'] as PaymentMethod),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.primarySurface
-                    : AppColors.surfaceVariant,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.border,
-                  width: isSelected ? 1.5 : 1,
-                ),
+            Expanded(
+              child: DateTimePickerCard(
+                icon: Icons.calendar_month_rounded,
+                label: 'Күн',
+                value: DateFormat('MMM dd, yyyy').format(_selectedDate),
+                onTap: _pickDate,
               ),
-              child: Column(
-                children: [
-                  Icon(
-                    m['icon'] as IconData,
-                    color: isSelected
-                        ? AppColors.primary
-                        : AppColors.textSecondary,
-                    size: 22,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    m['label'] as String,
-                    style: TextStyle(
-                      color: isSelected
-                          ? AppColors.primary
-                          : AppColors.textSecondary,
-                      fontWeight: isSelected
-                          ? FontWeight.w700
-                          : FontWeight.w500,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: DateTimePickerCard(
+                icon: Icons.access_time_rounded,
+                label: 'Уақыт',
+                value: _selectedTime.format(context),
+                onTap: _pickTime,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLocationSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Орналасуы', style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: _addressController,
+          decoration: InputDecoration(
+            hintText: 'Мекенжайды енгізіңіз',
+            prefixIcon: const Icon(Icons.location_on_outlined),
+            suffixIcon: Tooltip(
+              message: 'Картадан таңдау',
+              child: IconButton(
+                icon: const Icon(Icons.map_rounded, color: AppColors.primary),
+                onPressed: _pickLocationOnMap,
               ),
             ),
           ),
-        );
-      }).toList(),
+          maxLines: 2,
+        ),
+        if (_pickedLatLng != null) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              const Icon(
+                Icons.check_circle_rounded,
+                size: 14,
+                color: AppColors.success,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'Координаттар: ${_pickedLatLng!.latitude.toStringAsFixed(5)}, '
+                '${_pickedLatLng!.longitude.toStringAsFixed(5)}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildNotesSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Ескертпелер (міндетті емес)',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: _notesController,
+          decoration: const InputDecoration(
+            hintText: 'Арнайы талаптар...',
+            prefixIcon: Icon(Icons.note_outlined),
+          ),
+          maxLines: 3,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Төлем әдісі', style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 12),
+        PaymentSelector(
+          selected: _selectedPayment,
+          onChanged: (m) => setState(() => _selectedPayment = m),
+        ),
+      ],
     );
   }
 
@@ -472,18 +358,18 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       ),
       child: Column(
         children: [
-          _PriceRow(
-            label: 'Service Price',
+          PriceRow(
+            label: 'Қызмет бағасы',
             value: '\$${widget.service.price.toStringAsFixed(2)}',
           ),
           const SizedBox(height: 8),
-          _PriceRow(
-            label: 'Service Fee (5%)',
+          PriceRow(
+            label: 'Қызмет ақысы (5%)',
             value: '\$${serviceFee.toStringAsFixed(2)}',
           ),
           const Divider(height: 20),
-          _PriceRow(
-            label: 'Total',
+          PriceRow(
+            label: 'Жиыны',
             value: '\$${total.toStringAsFixed(2)}',
             isBold: true,
           ),
@@ -491,39 +377,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       ),
     );
   }
-}
 
-class _PriceRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool isBold;
-  const _PriceRow({
-    required this.label,
-    required this.value,
-    this.isBold = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: isBold ? AppColors.textPrimary : AppColors.textSecondary,
-            fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            color: isBold ? AppColors.primary : AppColors.textPrimary,
-            fontWeight: isBold ? FontWeight.w800 : FontWeight.w600,
-            fontSize: isBold ? 18 : 14,
-          ),
-        ),
-      ],
+  Widget _buildSubmitButton() {
+    return BlocBuilder<OrderBloc, OrderState>(
+      builder: (context, state) => GradientButton(
+        onPressed: state is OrderLoading ? null : _confirmOrder,
+        isLoading: state is OrderLoading,
+        label: 'Тапсырысты растау',
+        icon: Icons.check_circle_rounded,
+      ),
     );
   }
 }

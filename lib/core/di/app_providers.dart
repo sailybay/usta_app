@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/repositories/auth_repository.dart';
-import '../../data/repositories/order_repository.dart';
-import '../../data/repositories/service_repository.dart';
-import '../../data/repositories/review_repository.dart';
-import '../../data/repositories/user_repository.dart';
-import '../../presentation/blocs/ai/ai_bloc.dart';
-import '../../presentation/blocs/auth/auth_bloc.dart';
-import '../../presentation/blocs/order/order_bloc.dart';
-import '../../presentation/blocs/service/service_bloc.dart';
-import '../ai/ai_assistant_service.dart';
+import 'package:usta_app/core/ai/ai_assistant_service.dart';
+import 'package:usta_app/data/repositories/repositories.dart';
+import 'package:usta_app/presentation/blocs/blocs.dart';
 
+/// Корневой провайдер — настраивает все репозитории и BLoC-и для всего приложения.
+/// Добавить новый BLoC: 1) создать поле, 2) инициализировать в initState, 3) закрыть в dispose, 4) добавить в providers.
 class AppProviders extends StatefulWidget {
   final Widget child;
   const AppProviders({super.key, required this.child});
@@ -20,6 +15,7 @@ class AppProviders extends StatefulWidget {
 }
 
 class _AppProvidersState extends State<AppProviders> {
+  // ─── Repositories ──────────────────────────────────────────────────────────
   late final AuthRepository _authRepository;
   late final UserRepository _userRepository;
   late final OrderRepository _orderRepository;
@@ -27,6 +23,7 @@ class _AppProvidersState extends State<AppProviders> {
   late final ReviewRepository _reviewRepository;
   late final AiAssistantService _aiService;
 
+  // ─── BLoCs ─────────────────────────────────────────────────────────────────
   late final AuthBloc _authBloc;
   late final ServiceBloc _serviceBloc;
   late final OrderBloc _orderBloc;
