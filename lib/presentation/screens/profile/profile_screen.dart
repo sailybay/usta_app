@@ -173,59 +173,34 @@ class ProfileScreen extends StatelessWidget {
           // Menu items
           SliverList(
             delegate: SliverChildListDelegate([
-              _buildSection('Account', [
+              _buildSection('Аккаунт', [
                 _MenuItem(
                   icon: Icons.edit_rounded,
-                  label: 'Edit Profile',
-                  onTap: () => _showComingSoon(context),
-                ),
-                _MenuItem(
-                  icon: Icons.location_on_rounded,
-                  label: 'Saved Addresses',
-                  onTap: () => _showComingSoon(context),
-                ),
-                _MenuItem(
-                  icon: Icons.credit_card_rounded,
-                  label: 'Payment Methods',
+                  label: 'Редактировать профиль',
                   onTap: () => _showComingSoon(context),
                 ),
               ]),
               if (user.isWorker)
-                _buildSection('Worker', [
+                _buildSection('Для мастера', [
                   _MenuItem(
                     icon: Icons.dashboard_rounded,
-                    label: 'Dashboard',
+                    label: 'Дашборд',
                     onTap: () => context.push(AppRouter.workerDashboard),
                     trailingColor: AppColors.primary,
                   ),
-                  _MenuItem(
-                    icon: Icons.schedule_rounded,
-                    label: 'My Schedule',
-                    onTap: () => _showComingSoon(context),
-                  ),
                 ]),
-              _buildSection('Support', [
+              _buildSection('Поддержка', [
                 _MenuItem(
                   icon: Icons.auto_awesome_rounded,
-                  label: 'AI Assistant',
+                  label: 'AI Ассистент',
                   onTap: () => context.go(AppRouter.aiChat),
                   trailingColor: AppColors.primary,
-                ),
-                _MenuItem(
-                  icon: Icons.help_outline_rounded,
-                  label: 'Help & FAQ',
-                  onTap: () => _showComingSoon(context),
-                ),
-                _MenuItem(
-                  icon: Icons.description_rounded,
-                  label: 'Terms & Privacy',
-                  onTap: () => _showComingSoon(context),
                 ),
               ]),
               _buildSection('', [
                 _MenuItem(
                   icon: Icons.logout_rounded,
-                  label: 'Sign Out',
+                  label: 'Выйти',
                   textColor: AppColors.error,
                   iconColor: AppColors.error,
                   onTap: () {

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../../core/constants/app_constants.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository_interface.dart';
@@ -42,10 +43,33 @@ class AuthRepository implements AuthRepositoryInterface {
       password: password,
     );
 
+    final uid = credential.user!.uid;
     final doc = await _firestore
         .collection(AppConstants.usersCollection)
-        .doc(credential.user!.uid)
+        .doc(uid)
         .get();
+
+    // Firestore profile missing — create a minimal one from Auth data
+    if (!doc.exists) {
+      debugPrint(
+        '⚠️ AuthRepository: Firestore doc missing for uid=$uid, creating profile',
+      );
+      final authUser = credential.user!;
+      final minimalModel = model.UserModel(
+        id: uid,
+        name: authUser.displayName ?? email.split('@').first,
+        email: authUser.email ?? email,
+        phone: authUser.phoneNumber ?? '',
+        role: model.UserRole.client,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await _firestore
+          .collection(AppConstants.usersCollection)
+          .doc(uid)
+          .set(minimalModel.toFirestore());
+      return _mapToEntity(minimalModel);
+    }
 
     return _mapToEntity(model.UserModel.fromFirestore(doc));
   }

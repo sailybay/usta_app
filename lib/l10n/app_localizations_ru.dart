@@ -578,4 +578,102 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get ordersMadeBy => 'от';
+
+  @override
+  String get navWorkerDashboard => 'Главная';
+
+  @override
+  String get navWorkerServices => 'Услуги';
+
+  @override
+  String get workerServicesTitle => 'Мои услуги';
+
+  @override
+  String get workerServicesEmpty => 'Услуг пока нет';
+
+  @override
+  String get workerServicesEmptySubtitle =>
+      'Добавьте первую услугу, чтобы начать принимать заказы.';
+
+  @override
+  String get workerServicesAdd => 'Добавить услугу';
+
+  @override
+  String get workerServiceFormCreate => 'Создать услугу';
+
+  @override
+  String get workerServiceFormEdit => 'Редактировать услугу';
+
+  @override
+  String get workerServiceName => 'Название';
+
+  @override
+  String get workerServiceNameHint => 'Например: Уборка квартир';
+
+  @override
+  String get workerServiceNameRequired => 'Название обязательно';
+
+  @override
+  String get workerServiceDesc => 'Описание';
+
+  @override
+  String get workerServiceDescHint => 'Опишите, что входит в услугу...';
+
+  @override
+  String get workerServiceDescRequired => 'Описание обязательно';
+
+  @override
+  String get workerServiceCategory => 'Категория';
+
+  @override
+  String get workerServicePriceType => 'Тип цены';
+
+  @override
+  String get workerServicePriceFixed => 'Фиксированная';
+
+  @override
+  String get workerServicePriceHourly => 'Почасовая';
+
+  @override
+  String get workerServicePriceFrom => 'От';
+
+  @override
+  String get workerServicePrice => 'Цена (₸)';
+
+  @override
+  String get workerServicePriceRequired => 'Укажите цену';
+
+  @override
+  String get workerServicePriceInvalid => 'Некорректная цена';
+
+  @override
+  String get workerServiceTags => 'Теги';
+
+  @override
+  String get workerServiceTagsHint => 'Добавить тег...';
+
+  @override
+  String get workerServiceActive => 'Активна';
+
+  @override
+  String get workerServiceActiveSubtitle => 'Услуга видна клиентам в каталоге';
+
+  @override
+  String get workerServiceSave => 'Сохранить';
+
+  @override
+  String get workerServiceDeleteTooltip => 'Удалить услугу';
+
+  @override
+  String get workerServiceDeleteTitle => 'Удалить услугу?';
+
+  @override
+  String get workerServiceDeleteConfirm =>
+      'Это действие нельзя отменить. Услуга будет скрыта.';
+
+  @override
+  String get workerServiceDeleteCancel => 'Отмена';
+
+  @override
+  String get workerServiceDeleteConfirmBtn => 'Удалить';
 }

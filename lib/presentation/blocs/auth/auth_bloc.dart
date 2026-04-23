@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/user_entity.dart';
 import '../../../domain/repositories/auth_repository_interface.dart';
@@ -160,15 +161,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   String _mapAuthError(String error) {
-    if (error.contains('user-not-found') || error.contains('wrong-password')) {
-      return 'Invalid email or password.';
+    debugPrint('🔴 AuthBloc error: $error');
+    if (error.contains('user-not-found') ||
+        error.contains('wrong-password') ||
+        error.contains('invalid-credential') ||
+        error.contains('INVALID_LOGIN_CREDENTIALS')) {
+      return 'Неверный email или пароль.';
     } else if (error.contains('email-already-in-use')) {
-      return 'This email is already registered.';
+      return 'Этот email уже зарегистрирован.';
     } else if (error.contains('weak-password')) {
-      return 'Password must be at least 6 characters.';
-    } else if (error.contains('network')) {
-      return 'No internet connection. Please try again.';
+      return 'Пароль должен содержать минимум 6 символов.';
+    } else if (error.contains('invalid-email')) {
+      return 'Некорректный email адрес.';
+    } else if (error.contains('too-many-requests')) {
+      return 'Слишком много попыток. Попробуйте позже.';
+    } else if (error.contains('network') || error.contains('SocketException')) {
+      return 'Нет подключения к интернету.';
+    } else if (error.contains('user-disabled')) {
+      return 'Аккаунт заблокирован. Свяжитесь с поддержкой.';
     }
-    return 'An error occurred. Please try again.';
+    return 'Ошибка: $error';
   }
 }

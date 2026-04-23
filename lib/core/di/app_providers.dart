@@ -26,6 +26,7 @@ class _AppProvidersState extends State<AppProviders> {
   // ─── BLoCs ─────────────────────────────────────────────────────────────────
   late final AuthBloc _authBloc;
   late final ServiceBloc _serviceBloc;
+  late final WorkerServiceBloc _workerServiceBloc;
   late final OrderBloc _orderBloc;
   late final AiBloc _aiBloc;
   late final LocaleBloc _localeBloc;
@@ -45,6 +46,9 @@ class _AppProvidersState extends State<AppProviders> {
     // C4-fix: Wire reactive router guard to AuthBloc stream
     AppRouter.setAuthStream(_authBloc.stream);
     _serviceBloc = ServiceBloc(serviceRepository: _serviceRepository);
+    _workerServiceBloc = WorkerServiceBloc(
+      serviceRepository: _serviceRepository,
+    );
     _orderBloc = OrderBloc(
       orderRepository: _orderRepository,
       reviewRepository: _reviewRepository,
@@ -57,6 +61,7 @@ class _AppProvidersState extends State<AppProviders> {
   void dispose() {
     _authBloc.close();
     _serviceBloc.close();
+    _workerServiceBloc.close();
     _orderBloc.close();
     _aiBloc.close();
     _localeBloc.close();
@@ -77,6 +82,7 @@ class _AppProvidersState extends State<AppProviders> {
         providers: [
           BlocProvider.value(value: _authBloc),
           BlocProvider.value(value: _serviceBloc),
+          BlocProvider.value(value: _workerServiceBloc),
           BlocProvider.value(value: _orderBloc),
           BlocProvider.value(value: _aiBloc),
           BlocProvider.value(value: _localeBloc),

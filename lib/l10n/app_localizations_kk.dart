@@ -580,4 +580,102 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get ordersMadeBy => 'арқылы';
+
+  @override
+  String get navWorkerDashboard => 'Басты';
+
+  @override
+  String get navWorkerServices => 'Қызметтер';
+
+  @override
+  String get workerServicesTitle => 'Менің қызметтерім';
+
+  @override
+  String get workerServicesEmpty => 'Қызметтер әлі жоқ';
+
+  @override
+  String get workerServicesEmptySubtitle =>
+      'Тапсырыс қабылдау үшін алғашқы қызметті қосыңыз.';
+
+  @override
+  String get workerServicesAdd => 'Қызмет қосу';
+
+  @override
+  String get workerServiceFormCreate => 'Қызмет жасау';
+
+  @override
+  String get workerServiceFormEdit => 'Қызметті өзгерту';
+
+  @override
+  String get workerServiceName => 'Атау';
+
+  @override
+  String get workerServiceNameHint => 'Мыс.: Пәтерді жинау';
+
+  @override
+  String get workerServiceNameRequired => 'Атау міндетті';
+
+  @override
+  String get workerServiceDesc => 'Сипаттама';
+
+  @override
+  String get workerServiceDescHint => 'Қызметке не кіретіні сипаттаңыз...';
+
+  @override
+  String get workerServiceDescRequired => 'Сипаттама міндетті';
+
+  @override
+  String get workerServiceCategory => 'Санат';
+
+  @override
+  String get workerServicePriceType => 'Баға түрі';
+
+  @override
+  String get workerServicePriceFixed => 'Тұрақты';
+
+  @override
+  String get workerServicePriceHourly => 'Сағаттық';
+
+  @override
+  String get workerServicePriceFrom => 'Бастап';
+
+  @override
+  String get workerServicePrice => 'Баға (₸)';
+
+  @override
+  String get workerServicePriceRequired => 'Бағаны көрсетіңіз';
+
+  @override
+  String get workerServicePriceInvalid => 'Дұрыс емес баға';
+
+  @override
+  String get workerServiceTags => 'Тегтер';
+
+  @override
+  String get workerServiceTagsHint => 'Тег қосу...';
+
+  @override
+  String get workerServiceActive => 'Белсенді';
+
+  @override
+  String get workerServiceActiveSubtitle => 'Қызмет каталогта көрсетіледі';
+
+  @override
+  String get workerServiceSave => 'Сақтау';
+
+  @override
+  String get workerServiceDeleteTooltip => 'Қызметті жою';
+
+  @override
+  String get workerServiceDeleteTitle => 'Қызметті жою?';
+
+  @override
+  String get workerServiceDeleteConfirm =>
+      'Бұл әрекетті болдырмау мүмкін емес. Қызмет жасырынады.';
+
+  @override
+  String get workerServiceDeleteCancel => 'Болдырмау';
+
+  @override
+  String get workerServiceDeleteConfirmBtn => 'Жою';
 }

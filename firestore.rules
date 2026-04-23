@@ -31,8 +31,10 @@ service cloud.firestore {
     match /users/{userId} {
       // Anyone authenticated can read profiles (for service discovery)
       allow read: if isAuthenticated();
-      // Only the owner can write their profile
-      allow write: if isOwner(userId);
+      // Owner can create their own profile (registration / first-login)
+      allow create: if isOwner(userId);
+      // Owner can update their own profile
+      allow update: if isOwner(userId);
       // Admins have full access
       allow read, write: if isAdmin();
     }

@@ -18,6 +18,8 @@ class UserModel {
   final String? bio;
   final List<String> serviceCategories; // for workers
   final String? fcmToken;
+  final double? latitude; // worker location on map
+  final double? longitude; // worker location on map
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -34,6 +36,8 @@ class UserModel {
     this.bio,
     this.serviceCategories = const [],
     this.fcmToken,
+    this.latitude,
+    this.longitude,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -56,6 +60,8 @@ class UserModel {
       bio: data['bio'],
       serviceCategories: List<String>.from(data['serviceCategories'] ?? []),
       fcmToken: data['fcmToken'],
+      latitude: (data['lat'] as num?)?.toDouble(),
+      longitude: (data['lng'] as num?)?.toDouble(),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
@@ -74,6 +80,8 @@ class UserModel {
       'bio': bio,
       'serviceCategories': serviceCategories,
       'fcmToken': fcmToken,
+      if (latitude != null) 'lat': latitude,
+      if (longitude != null) 'lng': longitude,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(updatedAt),
     };
@@ -89,6 +97,8 @@ class UserModel {
     String? bio,
     List<String>? serviceCategories,
     String? fcmToken,
+    double? latitude,
+    double? longitude,
   }) {
     return UserModel(
       id: id,
@@ -103,6 +113,8 @@ class UserModel {
       bio: bio ?? this.bio,
       serviceCategories: serviceCategories ?? this.serviceCategories,
       fcmToken: fcmToken ?? this.fcmToken,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       createdAt: createdAt,
       updatedAt: DateTime.now(),
     );

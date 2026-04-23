@@ -48,17 +48,32 @@ class UserRepository {
         .update(updates);
   }
 
-  // Get workers by category
+  // Get workers by category (empty = all verified workers)
   Future<List<UserModel>> getWorkersByCategory(String category) async {
-    final query = await _firestore
+    Query query = _firestore
         .collection(AppConstants.usersCollection)
         .where('role', isEqualTo: 'worker')
-        .where('serviceCategories', arrayContains: category)
-        .where('isVerified', isEqualTo: true)
-        .orderBy('rating', descending: true)
-        .get();
+        .where('isVerified', isEqualTo: true);
 
-    return query.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+    if (category.isNotEmpty) {
+      query = query.where('serviceCategories', arrayContains: category);
+    }
+
+    final result = await query.orderBy('rating', descending: true).get();
+    return result.docs.map((doc) => UserModel.fromFirestore(doc)).toList();
+  }
+
+  // Workers with location set — used by the map screen
+  Future<List<UserModel>> getWorkersWithLocation() async {
+    final result = await _firestore
+        .collection(AppConstants.usersCollection)
+        .where('role', isEqualTo: 'worker')
+        .where('isVerified', isEqualTo: true)
+        .get();
+    return result.docs
+        .map((doc) => UserModel.fromFirestore(doc))
+        .where((u) => u.latitude != null && u.longitude != null)
+        .toList();
   }
 
   // Search workers by name

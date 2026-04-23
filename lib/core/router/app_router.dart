@@ -17,95 +17,114 @@ import '../../presentation/screens/chat/chat_screen.dart';
 import '../../presentation/screens/chat/ai_chat_screen.dart';
 import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/worker/worker_dashboard_screen.dart';
+import '../../presentation/screens/worker/worker_services_screen.dart';
+import '../../presentation/screens/worker/worker_service_form_screen.dart';
+import '../../presentation/screens/worker/worker_shell.dart';
 import '../../presentation/screens/onboarding/splash_screen.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
 import '../../presentation/screens/map/map_screen.dart';
 
-/// Routes that do not require authentication
+/// Routes that do NOT require authentication.
 const _publicRoutes = {'/', '/onboarding', '/login', '/register'};
 
+/// Routes inside the Client shell that workers must NEVER reach.
+const _clientOnlyRoutes = {'/home', '/ai-chat'};
+
+/// Routes inside the Worker shell that clients must NEVER reach.
+const _workerOnlyRoutes = {'/worker-dashboard', '/worker/services'};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 class AppRouter {
+  // ── Public ───────────────────────────────────────────────────────────────────
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String register = '/register';
+
+  // ── Client shell tabs ─────────────────────────────────────────────────────────
   static const String home = '/home';
+  static const String aiChat = '/ai-chat';
+
+  // ── Shared tabs (both shells) ─────────────────────────────────────────────────
+  static const String orders = '/orders';
+  static const String profile = '/profile';
+
+  // ── Worker shell tabs ─────────────────────────────────────────────────────────
+  static const String workerDashboard = '/worker-dashboard';
+  static const String workerServices = '/worker/services';
+  static const String workerServiceForm = '/worker/services/form';
+
+  // ── Full-screen routes ────────────────────────────────────────────────────────
   static const String serviceDetail = '/service/:id';
   static const String createOrder = '/order/create';
   static const String orderDetail = '/order/:id';
-  static const String orders = '/orders';
   static const String chat = '/chat/:chatId';
-  static const String aiChat = '/ai-chat';
-  static const String profile = '/profile';
-  static const String workerDashboard = '/worker-dashboard';
   static const String map = '/map';
+
+  // ─────────────────────────────────────────────────────────────────────────────
 
   static final _authListenable = _AuthBlocListenable();
 
-  /// Call this once when AuthBloc is created (from AppProviders.initState)
+  /// Wire the AuthBloc's stream into the router so redirects re-run on every
+  /// auth state change (login / logout / register).
   static void setAuthStream(Stream<dynamic> stream) {
     _authListenable.setStream(stream);
   }
 
-  // A4-fix: Auth guard via redirect
   static final GoRouter router = GoRouter(
     initialLocation: splash,
-    redirect: (BuildContext context, GoRouterState state) {
-      final location = state.matchedLocation;
-      if (_publicRoutes.contains(location)) return null;
-
-      final authState = context.read<AuthBloc>().state;
-      final isLoggedIn = authState is AuthAuthenticated;
-
-      if (!isLoggedIn) return login;
-      return null;
-    },
+    redirect: _redirect,
     refreshListenable: _authListenable,
     routes: [
-      GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
-      GoRoute(
-        path: onboarding,
-        builder: (context, state) => const OnboardingScreen(),
-      ),
-      GoRoute(path: login, builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: register,
-        builder: (context, state) => const RegisterScreen(),
-      ),
+      // ── Public ───────────────────────────────────────────────────────────────
+      GoRoute(path: splash, builder: (_, __) => const SplashScreen()),
+      GoRoute(path: onboarding, builder: (_, __) => const OnboardingScreen()),
+      GoRoute(path: login, builder: (_, __) => const LoginScreen()),
+      GoRoute(path: register, builder: (_, __) => const RegisterScreen()),
+
+      // ── Client shell (Home, AI Chat; Orders & Profile shared below) ───────────
       ShellRoute(
-        builder: (context, state, child) => MainShell(child: child),
+        builder: (_, __, child) => MainShell(child: child),
         routes: [
-          GoRoute(path: home, builder: (context, state) => const HomeScreen()),
+          GoRoute(path: home, builder: (_, __) => const HomeScreen()),
+          GoRoute(path: aiChat, builder: (_, __) => const AiChatScreen()),
+        ],
+      ),
+
+      // ── Worker shell (Dashboard, Services; Orders & Profile shared below) ─────
+      ShellRoute(
+        builder: (_, __, child) => WorkerShell(child: child),
+        routes: [
           GoRoute(
-            path: orders,
-            builder: (context, state) => const OrdersScreen(),
+            path: workerDashboard,
+            builder: (_, __) => const WorkerDashboardScreen(),
           ),
           GoRoute(
-            path: aiChat,
-            builder: (context, state) => const AiChatScreen(),
-          ),
-          GoRoute(
-            path: profile,
-            builder: (context, state) => const ProfileScreen(),
+            path: workerServices,
+            builder: (_, __) => const WorkerServicesScreen(),
           ),
         ],
       ),
+
+      // ── Shared standalone routes — rendered WITHOUT a shell nav bar ────────────
+      // Both client and worker can reach /orders and /profile.
+      // They appear as regular full-screen pages pushed on top of the shell.
+      GoRoute(path: orders, builder: (_, __) => const OrdersScreen()),
+      GoRoute(path: profile, builder: (_, __) => const ProfileScreen()),
+
+      // ── Full-screen / modal routes ────────────────────────────────────────────
       GoRoute(
         path: serviceDetail,
-        builder: (context, state) {
-          // A5-fix: extra is the preferred path; if it's null (e.g. after hot-restart),
-          // the screen handles the null case gracefully.
+        builder: (_, state) {
           final service = state.extra as ServiceEntity?;
-          if (service == null) {
-            // Fallback: go home if no data available (deep-link / restart scenario)
-            return const HomeScreen();
-          }
+          if (service == null) return const HomeScreen();
           return ServiceDetailScreen(service: service);
         },
       ),
       GoRoute(
         path: createOrder,
-        builder: (context, state) {
+        builder: (_, state) {
           final service = state.extra as ServiceEntity?;
           if (service == null) return const HomeScreen();
           return CreateOrderScreen(service: service);
@@ -113,7 +132,7 @@ class AppRouter {
       ),
       GoRoute(
         path: orderDetail,
-        builder: (context, state) {
+        builder: (_, state) {
           final order = state.extra as OrderEntity?;
           if (order == null) return const OrdersScreen();
           return OrderDetailScreen(order: order);
@@ -121,23 +140,49 @@ class AppRouter {
       ),
       GoRoute(
         path: chat,
-        builder: (context, state) {
-          final chatId = state.pathParameters['chatId']!;
-          return ChatScreen(chatId: chatId);
-        },
+        builder: (_, state) =>
+            ChatScreen(chatId: state.pathParameters['chatId']!),
       ),
       GoRoute(
-        path: workerDashboard,
-        builder: (context, state) => const WorkerDashboardScreen(),
+        path: workerServiceForm,
+        builder: (_, state) =>
+            WorkerServiceFormScreen(service: state.extra as ServiceEntity?),
       ),
-      GoRoute(path: map, builder: (context, state) => const MapScreen()),
+      GoRoute(path: map, builder: (_, __) => const MapScreen()),
     ],
   );
+
+  // ─── Auth redirect ──────────────────────────────────────────────────────────
+  //
+  // Rules:
+  //  1. Public routes  → always pass through.
+  //  2. Not logged in  → hard-redirect to /login.
+  //  3. Worker on client-exclusive route (/home, /ai-chat) → /worker-dashboard.
+  //  4. Client on worker-exclusive route (/worker-dashboard, /worker/services)
+  //     → /home.
+  //  5. Everything else → allow.
+  static String? _redirect(BuildContext context, GoRouterState state) {
+    final location = state.matchedLocation;
+
+    if (_publicRoutes.any((p) => location == p)) return null;
+
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! AuthAuthenticated) return login;
+
+    final isWorker = authState.user.isWorker;
+
+    if (isWorker && _clientOnlyRoutes.contains(location)) {
+      return workerDashboard;
+    }
+    if (!isWorker && _workerOnlyRoutes.contains(location)) {
+      return home;
+    }
+    return null;
+  }
 }
 
-/// C4-fix: Reactive auth guard. AppProviders wires AuthBloc.stream into this
-/// via [AppRouter.setAuthStream]. When the stream emits (login/logout/register),
-/// GoRouter re-evaluates its redirect function and sends the user to the right place.
+// ─── Reactive auth notifier ──────────────────────────────────────────────────
+
 class _AuthBlocListenable extends ChangeNotifier {
   StreamSubscription<dynamic>? _sub;
 
@@ -153,7 +198,8 @@ class _AuthBlocListenable extends ChangeNotifier {
   }
 }
 
-/// Bottom navigation shell widget
+// ─── Client bottom-nav shell ─────────────────────────────────────────────────
+
 class MainShell extends StatefulWidget {
   final Widget child;
   const MainShell({super.key, required this.child});
@@ -163,16 +209,17 @@ class MainShell extends StatefulWidget {
 }
 
 class _MainShellState extends State<MainShell> {
-  final _tabs = [
+  // home=0, orders=1, ai-chat=2, profile=3
+  static const _tabs = [
     AppRouter.home,
     AppRouter.orders,
     AppRouter.aiChat,
     AppRouter.profile,
   ];
 
-  int _locationToIndex(String location) {
+  int _locationIndex(String loc) {
     for (int i = _tabs.length - 1; i >= 0; i--) {
-      if (location.startsWith(_tabs[i])) return i;
+      if (loc.startsWith(_tabs[i])) return i;
     }
     return 0;
   }
@@ -180,35 +227,33 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    final currentIndex = _locationToIndex(location);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: (index) {
-          context.go(_tabs[index]);
-        },
+        selectedIndex: _locationIndex(location),
+        onDestinationSelected: (i) => context.go(_tabs[i]),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home),
-            label: AppLocalizations.of(context).navHome,
+            selectedIcon: const Icon(Icons.home_rounded),
+            label: l10n.navHome,
           ),
           NavigationDestination(
             icon: const Icon(Icons.list_alt_outlined),
-            selectedIcon: const Icon(Icons.list_alt),
-            label: AppLocalizations.of(context).navOrders,
+            selectedIcon: const Icon(Icons.list_alt_rounded),
+            label: l10n.navOrders,
           ),
           NavigationDestination(
             icon: const Icon(Icons.auto_awesome_outlined),
-            selectedIcon: const Icon(Icons.auto_awesome),
-            label: AppLocalizations.of(context).navAiHelp,
+            selectedIcon: const Icon(Icons.auto_awesome_rounded),
+            label: l10n.navAiHelp,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.person_outline),
-            selectedIcon: const Icon(Icons.person),
-            label: AppLocalizations.of(context).navProfile,
+            icon: const Icon(Icons.person_outline_rounded),
+            selectedIcon: const Icon(Icons.person_rounded),
+            label: l10n.navProfile,
           ),
         ],
       ),
@@ -216,18 +261,16 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-/// C4-fix: Wraps the AuthBloc stream so GoRouter reacts to every auth change.
-/// The old empty ChangeNotifier never called notifyListeners(), so logout
-/// didn’t trigger redirect. This implementation does.
+/// Legacy stream wrapper — kept for compatibility.
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
-    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+    _sub = stream.asBroadcastStream().listen((_) => notifyListeners());
   }
-  late final StreamSubscription<dynamic> _subscription;
+  late final StreamSubscription<dynamic> _sub;
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _sub.cancel();
     super.dispose();
   }
 }

@@ -1225,6 +1225,198 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'арқылы'**
   String get ordersMadeBy;
+
+  /// No description provided for @navWorkerDashboard.
+  ///
+  /// In kk, this message translates to:
+  /// **'Басты'**
+  String get navWorkerDashboard;
+
+  /// No description provided for @navWorkerServices.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызметтер'**
+  String get navWorkerServices;
+
+  /// No description provided for @workerServicesTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Менің қызметтерім'**
+  String get workerServicesTitle;
+
+  /// No description provided for @workerServicesEmpty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызметтер әлі жоқ'**
+  String get workerServicesEmpty;
+
+  /// No description provided for @workerServicesEmptySubtitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыс қабылдау үшін алғашқы қызметті қосыңыз.'**
+  String get workerServicesEmptySubtitle;
+
+  /// No description provided for @workerServicesAdd.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет қосу'**
+  String get workerServicesAdd;
+
+  /// No description provided for @workerServiceFormCreate.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет жасау'**
+  String get workerServiceFormCreate;
+
+  /// No description provided for @workerServiceFormEdit.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызметті өзгерту'**
+  String get workerServiceFormEdit;
+
+  /// No description provided for @workerServiceName.
+  ///
+  /// In kk, this message translates to:
+  /// **'Атау'**
+  String get workerServiceName;
+
+  /// No description provided for @workerServiceNameHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Мыс.: Пәтерді жинау'**
+  String get workerServiceNameHint;
+
+  /// No description provided for @workerServiceNameRequired.
+  ///
+  /// In kk, this message translates to:
+  /// **'Атау міндетті'**
+  String get workerServiceNameRequired;
+
+  /// No description provided for @workerServiceDesc.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сипаттама'**
+  String get workerServiceDesc;
+
+  /// No description provided for @workerServiceDescHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызметке не кіретіні сипаттаңыз...'**
+  String get workerServiceDescHint;
+
+  /// No description provided for @workerServiceDescRequired.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сипаттама міндетті'**
+  String get workerServiceDescRequired;
+
+  /// No description provided for @workerServiceCategory.
+  ///
+  /// In kk, this message translates to:
+  /// **'Санат'**
+  String get workerServiceCategory;
+
+  /// No description provided for @workerServicePriceType.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баға түрі'**
+  String get workerServicePriceType;
+
+  /// No description provided for @workerServicePriceFixed.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тұрақты'**
+  String get workerServicePriceFixed;
+
+  /// No description provided for @workerServicePriceHourly.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сағаттық'**
+  String get workerServicePriceHourly;
+
+  /// No description provided for @workerServicePriceFrom.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бастап'**
+  String get workerServicePriceFrom;
+
+  /// No description provided for @workerServicePrice.
+  ///
+  /// In kk, this message translates to:
+  /// **'Баға (₸)'**
+  String get workerServicePrice;
+
+  /// No description provided for @workerServicePriceRequired.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бағаны көрсетіңіз'**
+  String get workerServicePriceRequired;
+
+  /// No description provided for @workerServicePriceInvalid.
+  ///
+  /// In kk, this message translates to:
+  /// **'Дұрыс емес баға'**
+  String get workerServicePriceInvalid;
+
+  /// No description provided for @workerServiceTags.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тегтер'**
+  String get workerServiceTags;
+
+  /// No description provided for @workerServiceTagsHint.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тег қосу...'**
+  String get workerServiceTagsHint;
+
+  /// No description provided for @workerServiceActive.
+  ///
+  /// In kk, this message translates to:
+  /// **'Белсенді'**
+  String get workerServiceActive;
+
+  /// No description provided for @workerServiceActiveSubtitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызмет каталогта көрсетіледі'**
+  String get workerServiceActiveSubtitle;
+
+  /// No description provided for @workerServiceSave.
+  ///
+  /// In kk, this message translates to:
+  /// **'Сақтау'**
+  String get workerServiceSave;
+
+  /// No description provided for @workerServiceDeleteTooltip.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызметті жою'**
+  String get workerServiceDeleteTooltip;
+
+  /// No description provided for @workerServiceDeleteTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Қызметті жою?'**
+  String get workerServiceDeleteTitle;
+
+  /// No description provided for @workerServiceDeleteConfirm.
+  ///
+  /// In kk, this message translates to:
+  /// **'Бұл әрекетті болдырмау мүмкін емес. Қызмет жасырынады.'**
+  String get workerServiceDeleteConfirm;
+
+  /// No description provided for @workerServiceDeleteCancel.
+  ///
+  /// In kk, this message translates to:
+  /// **'Болдырмау'**
+  String get workerServiceDeleteCancel;
+
+  /// No description provided for @workerServiceDeleteConfirmBtn.
+  ///
+  /// In kk, this message translates to:
+  /// **'Жою'**
+  String get workerServiceDeleteConfirmBtn;
 }
 
 class _AppLocalizationsDelegate
