@@ -16,12 +16,16 @@ class _AiChatScreenState extends State<AiChatScreen> {
   final _scrollController = ScrollController();
 
   final _quickActions = [
-    '🔍 How do I find a service provider?',
-    '📦 How do I track my order?',
-    '💳 What payment methods are available?',
-    '❌ How do I cancel an order?',
-    '⭐ How do I leave a review?',
-    '📞 Contact support',
+    '🔍 Қызмет көрсетушіні қалай табамын?',
+    '🚗 Көлік жөндеу қызметі',
+    '🛠️ Сантехник қызметі',
+    '🧹 Үй тазалау қызметі',
+    '⚡ Электрик қызметі',
+    '📦 Тапсырысымды қалай қадағалаймын?',
+    '💳 Қандай төлем әдістері бар?',
+    '❌ Тапсырыстан қалай бас тартамын?',
+    '⭐ Қалай пікір қалдыра аламын?',
+    '📞 Қолдау қызметіне хабарласу',
   ];
 
   @override
@@ -31,7 +35,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
     // Greet user on first open
     if (aiState.messages.isEmpty) {
       context.read<AiBloc>().add(
-        AiMessageSent('Hello! What can you help me with?'),
+        AiMessageSent('Сәлеметсізбе! Сізге қалай көмектесе аламын?'),
       );
     }
   }
@@ -91,7 +95,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
                 Text(
-                  'Always online',
+                  'Желіде',
                   style: Theme.of(
                     context,
                   ).textTheme.bodySmall?.copyWith(color: AppColors.secondary),
@@ -104,7 +108,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
             onPressed: () => context.read<AiBloc>().add(AiSessionReset()),
-            tooltip: 'New conversation',
+            tooltip: 'Жаңа диалог',
           ),
         ],
       ),
@@ -214,12 +218,12 @@ class _AiChatScreenState extends State<AiChatScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Hi! I\'m Usta AI',
+              'Сәлем! Мен Usta AI-мын',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800),
             ),
             const SizedBox(height: 8),
             Text(
-              'I can help you find services, track orders, answer questions, and much more!',
+              'Мен сізге қызметтерді табуға, тапсырыстарды қадағалауға, сұрақтарға жауап беруге және тағы басқаларға көмектесемін!',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textSecondary, height: 1.5),
             ),
@@ -248,7 +252,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
               controller: _textController,
               onSubmitted: (_) => _sendMessage(),
               decoration: InputDecoration(
-                hintText: 'Ask Usta AI anything...',
+                hintText: 'Usta AI-дан сұраңыз...',
                 filled: true,
                 fillColor: AppColors.surfaceVariant,
                 border: OutlineInputBorder(
