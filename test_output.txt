@@ -1,0 +1,32 @@
+﻿00:00 +0: loading C:/Users/baga.HOME-PC/development/diploma_project/usta_app/test/blocs/worker_service_bloc_test.dart
+00:00 +0: WorkerServiceBloc loads services for worker
+00:00 +1: WorkerServiceBloc creates service and emits action success
+00:00 +1 -1: WorkerServiceBloc creates service and emits action success [E]
+  Expected: [
+              <<Instance of 'WorkerServiceLoading'>>,
+              <<Instance of 'WorkerServiceLoaded'>>,
+              <<Instance of 'WorkerServiceLoading'>>,
+              <<Instance of 'WorkerServiceActionSuccess'>>
+            ]
+    Actual: [
+              WorkerServiceLoading:WorkerServiceLoading(),
+              WorkerServiceLoaded:WorkerServiceLoaded([ServiceEntity(s1, Repair, Fix things, Repair, 150.0, fixed, null, 0.0, 0, w1, Master, null, true, [], null, null, null, 2024-01-01 00:00:00.000)]),
+              WorkerServiceActionSuccess:WorkerServiceActionSuccess(╥Ъ╤Л╨╖╨╝╨╡╤В ╤Б╙Щ╤В╤В╤Ц ╥Ы╨╛╤Б╤Л╨╗╨┤╤Л!, [ServiceEntity(s1, Repair, Fix things, Repair, 150.0, fixed, null, 0.0, 0, w1, Master, null, true, [], null, null, null, 2024-01-01 00:00:00.000)])
+            ]
+     Which: at location [2] is WorkerServiceActionSuccess:<WorkerServiceActionSuccess(╥Ъ╤Л╨╖╨╝╨╡╤В ╤Б╙Щ╤В╤В╤Ц ╥Ы╨╛╤Б╤Л╨╗╨┤╤Л!, [ServiceEntity(s1, Repair, Fix things, Repair, 150.0, fixed, null, 0.0, 0, w1, Master, null, true, [], null, null, null, 2024-01-01 00:00:00.000)])> which is not an instance of 'WorkerServiceLoading'
+  
+  package:matcher                              expect
+  package:bloc_test/src/bloc_test.dart 218:16  testBloc.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                   _Completer.completeError
+  package:bloc_test/src/bloc_test.dart 255:43  _runZonedGuarded.<fn>
+  ===== asynchronous gap ===========================
+  dart:async                                   _CustomZone.registerBinaryCallback
+  package:bloc_test/src/bloc_test.dart 252:5   _runZonedGuarded.<fn>
+  dart:async                                   runZonedGuarded
+  package:bloc_test/src/bloc_test.dart 251:3   _runZonedGuarded
+  package:bloc_test/src/bloc_test.dart 198:11  testBloc
+  package:bloc_test/src/bloc_test.dart 156:13  blocTest.<fn>
+  
+00:00 +1 -1: WorkerServiceBloc deletes service (soft delete) and emits action success
+00:00 +2 -1: Some tests failed.

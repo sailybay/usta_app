@@ -47,7 +47,10 @@ void main() {
       'emits [ServiceLoading, ServiceLoaded] on successful stream',
       build: () {
         when(
-          () => mockRepo.watchServices(category: any(named: 'category')),
+          () => mockRepo.watchServices(
+            category: any(named: 'category'),
+            sortBy: any(named: 'sortBy'),
+          ),
         ).thenAnswer((_) => Stream.value(services));
         return ServiceBloc(serviceRepository: mockRepo);
       },
@@ -62,7 +65,10 @@ void main() {
       'emits [ServiceLoading, ServiceLoaded(empty)] when stream has no services',
       build: () {
         when(
-          () => mockRepo.watchServices(category: any(named: 'category')),
+          () => mockRepo.watchServices(
+            category: any(named: 'category'),
+            sortBy: any(named: 'sortBy'),
+          ),
         ).thenAnswer((_) => Stream.value([]));
         return ServiceBloc(serviceRepository: mockRepo);
       },
@@ -82,7 +88,10 @@ void main() {
       'emits [ServiceLoading, ServiceLoaded] with query results',
       build: () {
         when(
-          () => mockRepo.watchServices(category: any(named: 'category')),
+          () => mockRepo.watchServices(
+            category: any(named: 'category'),
+            sortBy: any(named: 'sortBy'),
+          ),
         ).thenAnswer((_) => Stream.value([]));
         when(
           () => mockRepo.searchServices(any()),
@@ -102,7 +111,10 @@ void main() {
       'emits ServiceError when searchServices throws',
       build: () {
         when(
-          () => mockRepo.watchServices(category: any(named: 'category')),
+          () => mockRepo.watchServices(
+            category: any(named: 'category'),
+            sortBy: any(named: 'sortBy'),
+          ),
         ).thenAnswer((_) => Stream.value([]));
         when(() => mockRepo.searchServices(any())).thenThrow(Exception('fail'));
         return ServiceBloc(serviceRepository: mockRepo);
@@ -115,7 +127,10 @@ void main() {
       'triggers ServiceLoadAll when query is empty',
       build: () {
         when(
-          () => mockRepo.watchServices(category: any(named: 'category')),
+          () => mockRepo.watchServices(
+            category: any(named: 'category'),
+            sortBy: any(named: 'sortBy'),
+          ),
         ).thenAnswer((_) => Stream.value([]));
         return ServiceBloc(serviceRepository: mockRepo);
       },
@@ -132,7 +147,10 @@ void main() {
     'ServiceSelectCategory triggers reload with new category',
     build: () {
       when(
-        () => mockRepo.watchServices(category: any(named: 'category')),
+        () => mockRepo.watchServices(
+          category: any(named: 'category'),
+          sortBy: any(named: 'sortBy'),
+        ),
       ).thenAnswer((_) => Stream.value([]));
       return ServiceBloc(serviceRepository: mockRepo);
     },
@@ -149,7 +167,10 @@ void main() {
     'ServiceToggleSort triggers reload',
     build: () {
       when(
-        () => mockRepo.watchServices(category: any(named: 'category')),
+        () => mockRepo.watchServices(
+          category: any(named: 'category'),
+          sortBy: any(named: 'sortBy'),
+        ),
       ).thenAnswer((_) => Stream.value([]));
       return ServiceBloc(serviceRepository: mockRepo);
     },

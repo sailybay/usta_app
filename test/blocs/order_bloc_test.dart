@@ -17,14 +17,16 @@ class MockReviewRepository extends Mock implements ReviewRepository {}
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 OrderEntity _makeOrder({
   String id = 'o1',
+  String? workerId = 'w1',
+  String? workerName = 'Worker',
   OrderStatus status = OrderStatus.pending,
 }) {
   return OrderEntity(
     id: id,
     clientId: 'c1',
     clientName: 'Client',
-    workerId: 'w1',
-    workerName: 'Worker',
+    workerId: workerId,
+    workerName: workerName,
     serviceId: 's1',
     serviceName: 'Service',
     serviceCategory: 'Repair',
@@ -85,6 +87,47 @@ void main() {
         return buildBloc();
       },
       act: (bloc) => bloc.add(OrderLoadClientOrders('c1')),
+      expect: () => [
+        isA<OrderLoading>(),
+        isA<OrdersLoaded>().having((s) => s.orders, 'orders', orders),
+      ],
+    );
+  });
+
+  // ─── OrderLoadWorkerOrders ───────────────────────────────────────────────────
+  group('OrderLoadWorkerOrders', () {
+    final orders = [_makeOrder()];
+
+    blocTest<OrderBloc, OrderState>(
+      'emits [OrderLoading, OrdersLoaded] on stream data',
+      build: () {
+        when(
+          () => mockOrderRepo.watchWorkerOrders(any()),
+        ).thenAnswer((_) => Stream.value(orders));
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(OrderLoadWorkerOrders('w1')),
+      expect: () => [
+        isA<OrderLoading>(),
+        isA<OrdersLoaded>().having((s) => s.orders, 'orders', orders),
+      ],
+    );
+  });
+
+  // ─── OrderLoadPublicOrders ───────────────────────────────────────────────────
+  group('OrderLoadPublicOrders', () {
+    final orders = [_makeOrder(workerId: null, workerName: null)];
+
+    blocTest<OrderBloc, OrderState>(
+      'emits [OrderLoading, OrdersLoaded] on stream data',
+      build: () {
+        when(
+          () =>
+              mockOrderRepo.watchPublicOrders(category: any(named: 'category')),
+        ).thenAnswer((_) => Stream.value(orders));
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(OrderLoadPublicOrders()),
       expect: () => [
         isA<OrderLoading>(),
         isA<OrdersLoaded>().having((s) => s.orders, 'orders', orders),
@@ -163,6 +206,47 @@ void main() {
       },
       act: (bloc) => bloc.add(OrderUpdateStatus('o1', OrderStatus.accepted)),
       expect: () => [isA<OrderActionSuccess>()],
+    );
+  });
+
+  // ─── OrderAccept ─────────────────────────────────────────────────────────────
+  group('OrderAccept', () {
+    blocTest<OrderBloc, OrderState>(
+      'emits OrderActionSuccess on successful accept',
+      build: () {
+        when(
+          () => mockOrderRepo.acceptOrder(any(), any(), any(), any()),
+        ).thenAnswer((_) async {});
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(
+        OrderAccept(
+          orderId: 'o1',
+          workerId: 'w1',
+          workerName: 'Master Jack',
+          workerAvatarUrl: null,
+        ),
+      ),
+      expect: () => [isA<OrderActionSuccess>()],
+    );
+
+    blocTest<OrderBloc, OrderState>(
+      'emits OrderError when acceptOrder throws',
+      build: () {
+        when(
+          () => mockOrderRepo.acceptOrder(any(), any(), any(), any()),
+        ).thenThrow(Exception('Accept failed'));
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(
+        OrderAccept(
+          orderId: 'o1',
+          workerId: 'w1',
+          workerName: 'Master Jack',
+          workerAvatarUrl: null,
+        ),
+      ),
+      expect: () => [isA<OrderError>()],
     );
   });
 
