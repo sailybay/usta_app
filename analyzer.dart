@@ -10,7 +10,7 @@ void main() {
   for (var diag in map['diagnostics']) {
     final file = diag['location']['file'].toString().split('lib\\').last;
     sb.writeln(
-      '${file}:${diag['location']['range']['start']['line']} - ${diag['problemMessage']}',
+      '$file:${diag['location']['range']['start']['line']} - ${diag['problemMessage']}',
     );
   }
   out.writeAsStringSync(sb.toString(), encoding: utf8);
