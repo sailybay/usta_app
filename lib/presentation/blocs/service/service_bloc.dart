@@ -46,6 +46,8 @@ class ServicesUpdated extends ServiceEvent {
   List<Object?> get props => [services];
 }
 
+class ServiceReset extends ServiceEvent {}
+
 // ─── States ───────────────────────────────────────────────────────────────────
 abstract class ServiceState extends Equatable {
   @override
@@ -106,6 +108,13 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
         emit(ServiceLoaded(services: event.services));
       }
     });
+
+    on<ServiceReset>((event, emit) {
+      _streamSub?.cancel();
+      _currentCategory = null;
+      _currentSort = null;
+      emit(ServiceInitial());
+    });
   }
 
   Future<void> _onLoadAll(
@@ -115,10 +124,12 @@ class ServiceBloc extends Bloc<ServiceEvent, ServiceState> {
     emit(ServiceLoading());
     _currentCategory = event.category;
     _currentSort = event.sortBy;
-    await _streamSub?.cancel();
     _streamSub = _serviceRepository
-        .watchServices(category: event.category)
-        .listen((services) => add(ServicesUpdated(services)));
+        .watchServices(category: event.category, sortBy: event.sortBy)
+        .listen(
+          (services) => add(ServicesUpdated(services)),
+          onError: (e) => add(ServiceReset()),
+        );
   }
 
   Future<void> _onSearch(

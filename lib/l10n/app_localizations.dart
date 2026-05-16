@@ -476,6 +476,30 @@ abstract class AppLocalizations {
   /// **'Тапсырыс бас тартылды.'**
   String get orderCancelled;
 
+  /// No description provided for @orderClientLabel.
+  ///
+  /// In kk, this message translates to:
+  /// **'Клиент: {name}'**
+  String orderClientLabel(Object name);
+
+  /// No description provided for @chatTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Чат'**
+  String get chatTitle;
+
+  /// No description provided for @chatTypeMessage.
+  ///
+  /// In kk, this message translates to:
+  /// **'Хабарлама жазу...'**
+  String get chatTypeMessage;
+
+  /// No description provided for @chatStartConversation.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әңгімені бастаңыз!'**
+  String get chatStartConversation;
+
   /// Profile screen title
   ///
   /// In kk, this message translates to:
@@ -1232,6 +1256,12 @@ abstract class AppLocalizations {
   /// **'Басты'**
   String get navWorkerDashboard;
 
+  /// No description provided for @navOrderFinder.
+  ///
+  /// In kk, this message translates to:
+  /// **'Биржа'**
+  String get navOrderFinder;
+
   /// No description provided for @navWorkerServices.
   ///
   /// In kk, this message translates to:
@@ -1417,6 +1447,24 @@ abstract class AppLocalizations {
   /// In kk, this message translates to:
   /// **'Жою'**
   String get workerServiceDeleteConfirmBtn;
+
+  /// No description provided for @orderFinderTitle.
+  ///
+  /// In kk, this message translates to:
+  /// **'Тапсырыстарды іздеу'**
+  String get orderFinderTitle;
+
+  /// No description provided for @orderFinderEmpty.
+  ///
+  /// In kk, this message translates to:
+  /// **'Әзірге өзекті тапсырыстар жоқ'**
+  String get orderFinderEmpty;
+
+  /// No description provided for @orderFinderCategory.
+  ///
+  /// In kk, this message translates to:
+  /// **'Санат:'**
+  String get orderFinderCategory;
 }
 
 class _AppLocalizationsDelegate

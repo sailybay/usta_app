@@ -6,10 +6,10 @@ class OrderModel {
   final String clientId;
   final String clientName;
   final String? clientAvatarUrl;
-  final String workerId;
-  final String workerName;
+  final String? workerId;
+  final String? workerName;
   final String? workerAvatarUrl;
-  final String serviceId;
+  final String? serviceId;
   final String serviceName;
   final String serviceCategory;
   final double amount;
@@ -32,10 +32,10 @@ class OrderModel {
     required this.clientId,
     required this.clientName,
     this.clientAvatarUrl,
-    required this.workerId,
-    required this.workerName,
+    this.workerId,
+    this.workerName,
     this.workerAvatarUrl,
-    required this.serviceId,
+    this.serviceId,
     required this.serviceName,
     required this.serviceCategory,
     required this.amount,
@@ -61,10 +61,10 @@ class OrderModel {
       clientId: data['clientId'] ?? '',
       clientName: data['clientName'] ?? '',
       clientAvatarUrl: data['clientAvatarUrl'],
-      workerId: data['workerId'] ?? '',
-      workerName: data['workerName'] ?? '',
+      workerId: data['workerId'],
+      workerName: data['workerName'],
       workerAvatarUrl: data['workerAvatarUrl'],
-      serviceId: data['serviceId'] ?? '',
+      serviceId: data['serviceId'],
       serviceName: data['serviceName'] ?? '',
       serviceCategory: data['serviceCategory'] ?? '',
       amount: (data['amount'] ?? 0.0).toDouble(),

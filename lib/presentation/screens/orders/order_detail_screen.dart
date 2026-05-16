@@ -103,8 +103,14 @@ class OrderDetailScreen extends StatelessWidget {
       child: Column(
         children: [
           _InfoRow(label: l10n.orderService, value: order.serviceName),
-          _InfoRow(label: l10n.orderCategory, value: order.serviceCategory),
-          _InfoRow(label: l10n.orderProvider, value: order.workerName),
+          _InfoRow(
+            label: l10n.orderCategory,
+            value: _getLocalizedCategory(context, order.serviceCategory),
+          ),
+          _InfoRow(
+            label: l10n.orderProvider,
+            value: (order.workerName ?? '...').toString(),
+          ),
           _InfoRow(
             label: l10n.orderAmount,
             value: '${order.amount.toStringAsFixed(0)} ₸',
@@ -126,13 +132,13 @@ class OrderDetailScreen extends StatelessWidget {
         children: [
           _DateTimeChip(
             icon: Icons.calendar_month_rounded,
-            label: 'Date',
+            label: l10n.createOrderDate,
             value: DateFormat('dd.MM.yyyy').format(order.scheduledAt),
           ),
           const SizedBox(width: 12),
           _DateTimeChip(
             icon: Icons.access_time_rounded,
-            label: 'Time',
+            label: l10n.createOrderTime,
             value: DateFormat('HH:mm').format(order.scheduledAt),
           ),
         ],
@@ -351,13 +357,16 @@ class OrderDetailScreen extends StatelessWidget {
                     orderId: order.id,
                     clientId: order.clientId,
                     clientName: order.clientName,
-                    workerId: order.workerId,
+                    workerId: order.workerId ?? '',
                     rating: rating,
                     comment: commentController.text,
                     createdAt: DateTime.now(),
                   );
                   context.read<OrderBloc>().add(
-                    OrderSubmitReview(review: review, workerId: order.workerId),
+                    OrderSubmitReview(
+                      review: review,
+                      workerId: order.workerId ?? '',
+                    ),
                   );
                   Navigator.pop(ctx);
                 },
@@ -381,6 +390,26 @@ class OrderDetailScreen extends StatelessWidget {
         return l10n.orderStatusCompleted;
       case OrderStatus.cancelled:
         return l10n.orderStatusCancelled;
+    }
+  }
+
+  String _getLocalizedCategory(BuildContext context, String category) {
+    final l10n = AppLocalizations.of(context);
+    switch (category.toLowerCase()) {
+      case 'cleaning':
+        return l10n.catCleaning;
+      case 'repair':
+        return l10n.catRepair;
+      case 'delivery':
+        return l10n.catDelivery;
+      case 'tutoring':
+        return l10n.catTutoring;
+      case 'beauty':
+        return l10n.catBeauty;
+      case 'plumbing':
+        return l10n.catPlumbing;
+      default:
+        return category;
     }
   }
 }

@@ -16,7 +16,8 @@ class ServiceModel {
   final String? workerAvatarUrl;
   final bool isActive;
   final List<String> tags;
-  final GeoPoint? location;
+  final double? latitude;
+  final double? longitude;
   final String? city;
   final DateTime createdAt;
 
@@ -35,15 +36,67 @@ class ServiceModel {
     this.workerAvatarUrl,
     this.isActive = true,
     this.tags = const [],
-    this.location,
+    this.latitude,
+    this.longitude,
     this.city,
     required this.createdAt,
   });
 
-  factory ServiceModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+  factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
-      id: doc.id,
+      id: json['id']?.toString() ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      category: json['category'] ?? '',
+      price: (json['price'] ?? 0.0).toDouble(),
+      priceType: json['priceType'] ?? 'fixed',
+      imageUrl: json['imageUrl'],
+      rating: (json['rating'] ?? 0.0).toDouble(),
+      reviewCount: json['reviewCount'] ?? 0,
+      workerId: json['workerId']?.toString() ?? '',
+      workerName: json['workerName'] ?? '',
+      workerAvatarUrl: json['workerAvatarUrl'],
+      isActive: json['isActive'] ?? true,
+      tags: List<String>.from(json['tags'] ?? []),
+      latitude: (json['latitude'] ?? json['location']?['lat'])?.toDouble(),
+      longitude: (json['longitude'] ?? json['location']?['lng'])?.toDouble(),
+      city: json['city'],
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'category': category,
+      'price': price,
+      'priceType': priceType,
+      'imageUrl': imageUrl,
+      'rating': rating,
+      'reviewCount': reviewCount,
+      'workerId': workerId,
+      'workerName': workerName,
+      'workerAvatarUrl': workerAvatarUrl,
+      'isActive': isActive,
+      'tags': tags,
+      'latitude': latitude,
+      'longitude': longitude,
+      'city': city,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
+  // Firestore compatibility
+  factory ServiceModel.fromFirestore(
+    Map<String, dynamic> data,
+    String documentId,
+  ) {
+    return ServiceModel(
+      id: documentId,
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       category: data['category'] ?? '',
@@ -57,9 +110,10 @@ class ServiceModel {
       workerAvatarUrl: data['workerAvatarUrl'],
       isActive: data['isActive'] ?? true,
       tags: List<String>.from(data['tags'] ?? []),
-      location: data['location'] as GeoPoint?,
+      latitude: data['location']?.latitude,
+      longitude: data['location']?.longitude,
       city: data['city'],
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      createdAt: data['createdAt']?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -78,21 +132,12 @@ class ServiceModel {
       'workerAvatarUrl': workerAvatarUrl,
       'isActive': isActive,
       'tags': tags,
-      'location': location,
       'city': city,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'location': latitude != null && longitude != null
+          ? GeoPoint(latitude!, longitude!)
+          : null,
+      'createdAt': FieldValue.serverTimestamp(),
     };
-  }
-
-  String get formattedPrice {
-    switch (priceType) {
-      case 'hourly':
-        return '\$${price.toStringAsFixed(0)}/hr';
-      case 'from':
-        return 'From \$${price.toStringAsFixed(0)}';
-      default:
-        return '\$${price.toStringAsFixed(0)}';
-    }
   }
 
   ServiceEntity toEntity() {
@@ -111,8 +156,8 @@ class ServiceModel {
       workerAvatarUrl: workerAvatarUrl,
       isActive: isActive,
       tags: tags,
-      latitude: location?.latitude,
-      longitude: location?.longitude,
+      latitude: latitude,
+      longitude: longitude,
       city: city,
       createdAt: createdAt,
     );
@@ -134,9 +179,8 @@ class ServiceModel {
       workerAvatarUrl: entity.workerAvatarUrl,
       isActive: entity.isActive,
       tags: entity.tags,
-      location: (entity.latitude != null && entity.longitude != null)
-          ? GeoPoint(entity.latitude!, entity.longitude!)
-          : null,
+      latitude: entity.latitude,
+      longitude: entity.longitude,
       city: entity.city,
       createdAt: entity.createdAt,
     );

@@ -1,45 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:usta_app/l10n/app_localizations.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 
-class OnboardingPage {
+class OnboardingPageData {
   final String title;
   final String subtitle;
   final IconData icon;
   final LinearGradient gradient;
 
-  const OnboardingPage({
+  const OnboardingPageData({
     required this.title,
     required this.subtitle,
     required this.icon,
     required this.gradient,
   });
 }
-
-const _pages = [
-  OnboardingPage(
-    title: 'Find Trusted\nService Providers',
-    subtitle:
-        'Browse hundreds of verified professionals for repair, cleaning, tutoring, and more.',
-    icon: Icons.search_rounded,
-    gradient: AppColors.primaryGradient,
-  ),
-  OnboardingPage(
-    title: 'Book in\nSeconds',
-    subtitle:
-        'Schedule your service at the right time and place. Track your order in real-time.',
-    icon: Icons.calendar_month_rounded,
-    gradient: AppColors.heroGradient,
-  ),
-  OnboardingPage(
-    title: 'AI-Powered\nAssistant',
-    subtitle:
-        'Our smart AI guides you through every step — from booking to payment.',
-    icon: Icons.auto_awesome_rounded,
-    gradient: AppColors.successGradient,
-  ),
-];
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -52,14 +29,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  List<OnboardingPageData> _getPages(AppLocalizations l10n) => [
+    OnboardingPageData(
+      title: l10n.onboardingTitle1,
+      subtitle: l10n.onboardingSubtitle1,
+      icon: Icons.search_rounded,
+      gradient: AppColors.primaryGradient,
+    ),
+    OnboardingPageData(
+      title: l10n.onboardingTitle2,
+      subtitle: l10n.onboardingSubtitle2,
+      icon: Icons.calendar_month_rounded,
+      gradient: AppColors.heroGradient,
+    ),
+    OnboardingPageData(
+      title: l10n.onboardingTitle3,
+      subtitle: l10n.onboardingSubtitle3,
+      icon: Icons.auto_awesome_rounded,
+      gradient: AppColors.successGradient,
+    ),
+  ];
+
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
 
-  void _nextPage() {
-    if (_currentPage < _pages.length - 1) {
+  void _nextPage(int pageCount) {
+    if (_currentPage < pageCount - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -71,25 +69,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final pages = _getPages(l10n);
+
     return Scaffold(
       body: Stack(
         children: [
           PageView.builder(
             controller: _pageController,
-            itemCount: _pages.length,
+            itemCount: pages.length,
             onPageChanged: (i) => setState(() => _currentPage = i),
             itemBuilder: (context, index) {
-              final page = _pages[index];
+              final page = pages[index];
               return _OnboardingPageWidget(page: page);
             },
           ),
-          Positioned(bottom: 0, left: 0, right: 0, child: _buildFooter()),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _buildFooter(l10n, pages.length),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(AppLocalizations l10n, int pageCount) {
     return Container(
       padding: const EdgeInsets.fromLTRB(28, 20, 28, 48),
       child: Column(
@@ -98,7 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
-              _pages.length,
+              pageCount,
               (i) => AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -116,17 +122,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           const SizedBox(height: 32),
           Row(
             children: [
-              if (_currentPage < _pages.length - 1)
+              if (_currentPage < pageCount - 1)
                 TextButton(
                   onPressed: () => context.go(AppRouter.login),
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  child: Text(
+                    l10n.onboardingSkip,
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 ),
               const Spacer(),
               ElevatedButton(
-                onPressed: _nextPage,
+                onPressed: () => _nextPage(pageCount),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: AppColors.primary,
@@ -139,9 +145,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _currentPage == _pages.length - 1
-                          ? 'Get Started'
-                          : 'Next',
+                      _currentPage == pageCount - 1
+                          ? l10n.onboardingGetStarted
+                          : l10n.onboardingNext,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -161,7 +167,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 }
 
 class _OnboardingPageWidget extends StatelessWidget {
-  final OnboardingPage page;
+  final OnboardingPageData page;
   const _OnboardingPageWidget({required this.page});
 
   @override

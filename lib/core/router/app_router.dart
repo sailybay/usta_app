@@ -19,6 +19,7 @@ import '../../presentation/screens/profile/profile_screen.dart';
 import '../../presentation/screens/worker/worker_dashboard_screen.dart';
 import '../../presentation/screens/worker/worker_services_screen.dart';
 import '../../presentation/screens/worker/worker_service_form_screen.dart';
+import '../../presentation/screens/worker/order_finder_screen.dart';
 import '../../presentation/screens/worker/worker_shell.dart';
 import '../../presentation/screens/onboarding/splash_screen.dart';
 import '../../presentation/screens/onboarding/onboarding_screen.dart';
@@ -52,6 +53,7 @@ class AppRouter {
 
   // ── Worker shell tabs ─────────────────────────────────────────────────────────
   static const String workerDashboard = '/worker-dashboard';
+  static const String workerOrderFinder = '/worker/finder';
   static const String workerServices = '/worker/services';
   static const String workerServiceForm = '/worker/services/form';
 
@@ -78,40 +80,47 @@ class AppRouter {
     refreshListenable: _authListenable,
     routes: [
       // ── Public ───────────────────────────────────────────────────────────────
-      GoRoute(path: splash, builder: (_, __) => const SplashScreen()),
-      GoRoute(path: onboarding, builder: (_, __) => const OnboardingScreen()),
-      GoRoute(path: login, builder: (_, __) => const LoginScreen()),
-      GoRoute(path: register, builder: (_, __) => const RegisterScreen()),
+      GoRoute(path: splash, builder: (_, _) => const SplashScreen()),
+      GoRoute(path: onboarding, builder: (_, _) => const OnboardingScreen()),
+      GoRoute(path: login, builder: (_, _) => const LoginScreen()),
+      GoRoute(path: register, builder: (_, _) => const RegisterScreen()),
 
       // ── Client shell (Home, AI Chat; Orders & Profile shared below) ───────────
       ShellRoute(
-        builder: (_, __, child) => MainShell(child: child),
+        builder: (_, _, child) => MainShell(child: child),
         routes: [
-          GoRoute(path: home, builder: (_, __) => const HomeScreen()),
-          GoRoute(path: aiChat, builder: (_, __) => const AiChatScreen()),
+          GoRoute(path: home, builder: (_, _) => const HomeScreen()),
+          GoRoute(path: aiChat, builder: (_, _) => const AiChatScreen()),
+          GoRoute(path: orders, builder: (_, _) => const OrdersScreen()),
+          GoRoute(path: profile, builder: (_, _) => const ProfileScreen()),
         ],
       ),
 
       // ── Worker shell (Dashboard, Services; Orders & Profile shared below) ─────
       ShellRoute(
-        builder: (_, __, child) => WorkerShell(child: child),
+        builder: (_, _, child) => WorkerShell(child: child),
         routes: [
           GoRoute(
             path: workerDashboard,
-            builder: (_, __) => const WorkerDashboardScreen(),
+            builder: (_, _) => const WorkerDashboardScreen(),
+          ),
+          GoRoute(
+            path: workerOrderFinder,
+            builder: (_, _) => const OrderFinderScreen(),
           ),
           GoRoute(
             path: workerServices,
-            builder: (_, __) => const WorkerServicesScreen(),
+            builder: (_, _) => const WorkerServicesScreen(),
           ),
+          GoRoute(path: orders, builder: (_, _) => const OrdersScreen()),
+          GoRoute(path: profile, builder: (_, _) => const ProfileScreen()),
         ],
       ),
 
       // ── Shared standalone routes — rendered WITHOUT a shell nav bar ────────────
       // Both client and worker can reach /orders and /profile.
       // They appear as regular full-screen pages pushed on top of the shell.
-      GoRoute(path: orders, builder: (_, __) => const OrdersScreen()),
-      GoRoute(path: profile, builder: (_, __) => const ProfileScreen()),
+      // Standalone routes managed via shells
 
       // ── Full-screen / modal routes ────────────────────────────────────────────
       GoRoute(
@@ -124,9 +133,8 @@ class AppRouter {
       ),
       GoRoute(
         path: createOrder,
-        builder: (_, state) {
+        builder: (context, state) {
           final service = state.extra as ServiceEntity?;
-          if (service == null) return const HomeScreen();
           return CreateOrderScreen(service: service);
         },
       ),
@@ -148,7 +156,7 @@ class AppRouter {
         builder: (_, state) =>
             WorkerServiceFormScreen(service: state.extra as ServiceEntity?),
       ),
-      GoRoute(path: map, builder: (_, __) => const MapScreen()),
+      GoRoute(path: map, builder: (_, _) => const MapScreen()),
     ],
   );
 

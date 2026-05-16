@@ -65,6 +65,30 @@ class OrdersUpdated extends OrderEvent {
   List<Object?> get props => [orders];
 }
 
+class OrderLoadPublicOrders extends OrderEvent {
+  final String? category;
+  OrderLoadPublicOrders({this.category});
+  @override
+  List<Object?> get props => [category];
+}
+
+class OrderAccept extends OrderEvent {
+  final String orderId;
+  final String workerId;
+  final String workerName;
+  final String? workerAvatarUrl;
+  OrderAccept({
+    required this.orderId,
+    required this.workerId,
+    required this.workerName,
+    this.workerAvatarUrl,
+  });
+  @override
+  List<Object?> get props => [orderId, workerId];
+}
+
+class OrderReset extends OrderEvent {}
+
 // ─── States ───────────────────────────────────────────────────────────────────
 abstract class OrderState extends Equatable {
   @override
@@ -123,7 +147,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<OrderUpdateStatus>(_onUpdateStatus);
     on<OrderCancel>(_onCancelOrder);
     on<OrderSubmitReview>(_onSubmitReview);
+    on<OrderLoadPublicOrders>(_onLoadPublicOrders);
+    on<OrderAccept>(_onAcceptOrder);
     on<OrdersUpdated>((event, emit) => emit(OrdersLoaded(event.orders)));
+    on<OrderReset>((event, emit) {
+      _orderSubscription?.cancel();
+      emit(OrderInitial());
+    });
   }
 
   Future<void> _onLoadClientOrders(
@@ -131,10 +161,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     Emitter<OrderState> emit,
   ) async {
     emit(OrderLoading());
-    await _orderSubscription?.cancel();
     _orderSubscription = _orderRepository
         .watchClientOrders(event.clientId)
-        .listen((orders) => add(OrdersUpdated(orders)));
+        .listen(
+          (orders) => add(OrdersUpdated(orders)),
+          onError: (e) => add(OrderReset()),
+        );
   }
 
   Future<void> _onLoadWorkerOrders(
@@ -142,10 +174,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     Emitter<OrderState> emit,
   ) async {
     emit(OrderLoading());
-    await _orderSubscription?.cancel();
     _orderSubscription = _orderRepository
         .watchWorkerOrders(event.workerId)
-        .listen((orders) => add(OrdersUpdated(orders)));
+        .listen(
+          (orders) => add(OrdersUpdated(orders)),
+          onError: (e) => add(OrderReset()),
+        );
   }
 
   Future<void> _onCreateOrder(
@@ -202,6 +236,37 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     } catch (e) {
       emit(OrderError('Failed to submit review.'));
     }
+  }
+
+  Future<void> _onAcceptOrder(
+    OrderAccept event,
+    Emitter<OrderState> emit,
+  ) async {
+    try {
+      await _orderRepository.acceptOrder(
+        event.orderId,
+        event.workerId,
+        event.workerName,
+        event.workerAvatarUrl,
+      );
+      emit(OrderActionSuccess('Order accepted! You are now the provider.'));
+    } catch (e) {
+      emit(OrderError('Failed to accept order.'));
+    }
+  }
+
+  Future<void> _onLoadPublicOrders(
+    OrderLoadPublicOrders event,
+    Emitter<OrderState> emit,
+  ) async {
+    emit(OrderLoading());
+    await _orderSubscription?.cancel();
+    _orderSubscription = _orderRepository
+        .watchPublicOrders(category: event.category)
+        .listen(
+          (orders) => add(OrdersUpdated(orders)),
+          onError: (e) => add(OrderReset()),
+        );
   }
 
   @override

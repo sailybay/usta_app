@@ -26,9 +26,14 @@ class OrderRepository implements OrderRepositoryInterface {
     await docRef.set(newOrderModel.toFirestore());
 
     // Create an empty chat for this order
+    final participantIds = [order.clientId];
+    if (order.workerId != null) {
+      participantIds.add(order.workerId!);
+    }
+
     await _firestore.collection(AppConstants.chatsCollection).doc(chatId).set({
       'orderId': docRef.id,
-      'participantIds': [order.clientId, order.workerId],
+      'participantIds': participantIds,
       'lastMessage': null,
       'lastMessageAt': null,
       'unreadCount': 0,
@@ -179,5 +184,68 @@ class OrderRepository implements OrderRepositoryInterface {
       'totalOrders': totalOrders,
       'incomeByMonth': incomeByMonth,
     };
+  }
+
+  // Real-time stream for public orders (no worker assigned)
+  @override
+  Stream<List<OrderEntity>> watchPublicOrders({String? category}) {
+    Query<Map<String, dynamic>> query = _firestore
+        .collection(AppConstants.ordersCollection)
+        .where('workerId', isNull: true)
+        .where('status', isEqualTo: 'pending');
+
+    if (category != null && category.isNotEmpty) {
+      query = query.where('serviceCategory', isEqualTo: category);
+    }
+
+    return query
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+          (s) => s.docs
+              .map((d) => OrderModel.fromFirestore(d).toEntity())
+              .toList(),
+        )
+        .handleError((e) {
+          debugPrint('❌ watchPublicOrders error: $e');
+        });
+  }
+
+  // Accept a public order
+  @override
+  Future<void> acceptOrder(
+    String orderId,
+    String workerId,
+    String workerName,
+    String? workerAvatarUrl,
+  ) async {
+    final orderDoc = _firestore
+        .collection(AppConstants.ordersCollection)
+        .doc(orderId);
+    final doc = await orderDoc.get();
+    if (!doc.exists) return;
+
+    final data = doc.data()!;
+    final chatId = data['chatId'];
+
+    await _firestore.runTransaction((transaction) async {
+      transaction.update(orderDoc, {
+        'workerId': workerId,
+        'workerName': workerName,
+        'workerAvatarUrl': workerAvatarUrl,
+        'status': OrderStatus.accepted.firestoreValue,
+        'acceptedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Update chat participants to include the worker
+      if (chatId != null) {
+        transaction.update(
+          _firestore.collection(AppConstants.chatsCollection).doc(chatId),
+          {
+            'participantIds': FieldValue.arrayUnion([workerId]),
+          },
+        );
+      }
+    });
   }
 }

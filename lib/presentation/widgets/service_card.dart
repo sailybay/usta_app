@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../domain/entities/service_entity.dart';
+import '../../l10n/app_localizations.dart';
 import 'star_rating.dart';
 
 class ServiceCard extends StatelessWidget {
@@ -69,7 +70,7 @@ class ServiceCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        service.category,
+                        _getLocalizedCategory(context, service.category),
                         style: TextStyle(
                           color: categoryColor,
                           fontSize: 10,
@@ -172,6 +173,26 @@ class ServiceCard extends StatelessWidget {
         return Icons.face_retouching_natural_rounded;
       default:
         return Icons.plumbing_rounded;
+    }
+  }
+
+  String _getLocalizedCategory(BuildContext context, String category) {
+    final l10n = AppLocalizations.of(context);
+    switch (category.toLowerCase()) {
+      case 'cleaning':
+        return l10n.catCleaning;
+      case 'repair':
+        return l10n.catRepair;
+      case 'delivery':
+        return l10n.catDelivery;
+      case 'tutoring':
+        return l10n.catTutoring;
+      case 'beauty':
+        return l10n.catBeauty;
+      case 'plumbing':
+        return l10n.catPlumbing;
+      default:
+        return category;
     }
   }
 }

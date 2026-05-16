@@ -44,7 +44,7 @@ class PendingOrderCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Клиент: ${order.clientName}',
+            l10n.orderClientLabel(order.clientName),
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 13,

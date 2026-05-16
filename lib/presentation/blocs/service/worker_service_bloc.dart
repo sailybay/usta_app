@@ -61,6 +61,8 @@ class WorkerServiceDelete extends WorkerServiceEvent {
   List<Object?> get props => [serviceId];
 }
 
+class WorkerServiceReset extends WorkerServiceEvent {}
+
 // ─── States ───────────────────────────────────────────────────────────────────
 
 abstract class WorkerServiceState extends Equatable {
@@ -115,6 +117,12 @@ class WorkerServiceBloc extends Bloc<WorkerServiceEvent, WorkerServiceState> {
     on<WorkerServiceUpdate>(_onUpdate);
     on<WorkerServiceToggleActive>(_onToggleActive);
     on<WorkerServiceDelete>(_onDelete);
+    on<WorkerServiceReset>((event, emit) {
+      _sub?.cancel();
+      _cachedServices = [];
+      _currentWorkerId = null;
+      emit(WorkerServiceInitial());
+    });
   }
 
   // ── Handlers ────────────────────────────────────────────────────────────────

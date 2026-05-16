@@ -18,9 +18,28 @@ class AiAssistantService {
   static const String _groqApiUrl =
       'https://api.groq.com/openai/v1/chat/completions';
   static const String _groqApiKey = ApiKeys.groqApiKey;
-  // Updated to latest available model — llama-3.3-70b-versatile may be
-  // unavailable on new API keys. Use llama-3.1-8b-instant as fallback.
-  static const String _model = 'llama-3.1-8b-instant';
+  // Updated to latest available model — llama-3.3-70b
+  static const String _model = 'llama-3.3-70b-versatile';
+
+  // AI System Prompt
+  static const String aiSystemPrompt = '''
+Сен — Usta AI, "Usta" қызмет көрсету платформасының ақылды ассистентісің. Сөйлеу мәнерің жылы, сыпайы және шынайы көмек көрсетуге бағытталған болуы керек.
+
+МЫНДАЙ ТЕРМИНДЕРДІ ҒАНА ҚОЛДАН (ГЛОССАРИЙ):
+- "App/Application" -> "Қосымша"
+- "Order" -> "Тапсырыс"
+- "Service" -> "Қызмет"
+- "Worker/Master/Provider" -> "Маман" немесе "Шебер"
+- "Client/Customer" -> "Тапсырыс беруші" немесе "Клиент"
+- "Rating/Review" -> "Рейтинг" немесе "Пікір"
+- "Price/Amount" -> "Бағасы" немесе "Сомасы"
+
+ТІЛДІК ЕРЕЖЕЛЕР:
+1. "Ордерлер", "апп", "воркер" деген сияқты ағылшын сөздерін транслитерация жасап қолдануға ҚАТАҢ ТИЫМ САЛЫНАДЫ.
+2. Сөйлемдерді орыс немесе ағылшын тілінен сөзбе-сөз аударма (калька) жасамай, қазақ тілінің табиғи сөйлеу нормаларына сай құрастыр.
+3. Құрғақ ақпарат беріп қана қоймай, пайдаланушымен жылы диалог жүргіз (мысалы: "Қайырлы күн! Сізге қалай көмектесе аламын?").
+4. Егер тапсырыс күйі (статусы) туралы сұраса, оны түсінікті тілмен түсіндір.
+''';
 
   // Conversation history (role: system/user/assistant)
   final List<Map<String, String>> _history = [];
@@ -113,10 +132,10 @@ class AiAssistantService {
   }) async {
     final prompt =
         '''
-Based on the following user need, recommend the most suitable service category from the list.
-User need: "$userNeed"
-Available categories: ${availableCategories.join(', ')}
-Respond with only the category name and a brief 1-sentence explanation.
+Пайдаланушының мына қажеттілігіне сүйене отырып, тізімнен ең қолайлы қызмет категориясын ұсын.
+Пайдаланушы қажеттілігі: "$userNeed"
+Қолжетімді категориялар: ${availableCategories.join(', ')}
+Тек категория атауын және оны неге таңдағаныңды 1 сөйлеммен қазақ тілінде түсіндір.
 ''';
     return await sendMessage(prompt);
   }
@@ -128,8 +147,8 @@ Respond with only the category name and a brief 1-sentence explanation.
   ) async {
     final prompt =
         '''
-A user has an order for "$serviceName" with status "$orderStatus". 
-Provide a brief, helpful message about what this status means and what they should expect next.
+Пайдаланушыда "$serviceName" қызметіне тапсырыс бар, оның қазіргі күйі (статусы): "$orderStatus".
+Бұл статус нені білдіретінін және әрі қарай не болатынын пайдаланушыға қазақ тілінде қысқаша түсіндір.
 ''';
     return await sendMessage(prompt);
   }
@@ -142,11 +161,11 @@ Provide a brief, helpful message about what this status means and what they shou
   }) async {
     final prompt =
         '''
-A service provider has:
-- Completed orders: $completedOrders
-- Rating: $rating/5.0
-- Total income: \$$totalIncome
-Provide 2 short, actionable recommendations to improve their performance and income.
+Қызмет көрсетушінің (Usta) көрсеткіштері:
+- Орындалған тапсырыстар: $completedOrders
+- Рейтинг: $rating/5.0
+- Жалпы табыс: \$$totalIncome
+Оның жұмыс тиімділігі мен табысын арттыру үшін қазақ тілінде 2 қысқа әрі нақты кеңес бер.
 ''';
     return await sendMessage(prompt);
   }
@@ -155,8 +174,8 @@ Provide 2 short, actionable recommendations to improve their performance and inc
   Future<String> getTechnicalSupport(String issue) async {
     final prompt =
         '''
-User is experiencing this issue with the Usta App: "$issue"
-Provide a clear step-by-step solution. If this cannot be resolved via app, instruct them to email support@ustaapp.com.
+Пайдаланушыда Usta App қосымшасында мынадай мәселе туындады: "$issue"
+Мәселені шешудің қадамдарын қазақ тілінде түсіндір. Егер қосымша арқылы шешілмесе, support@ustaapp.com поштасына жазуды ұсын.
 ''';
     return await sendMessage(prompt);
   }

@@ -10,4 +10,11 @@ abstract class OrderRepositoryInterface {
   Future<void> updateOrderStatus(String orderId, OrderStatus status);
   Future<void> cancelOrder(String orderId, String reason);
   Future<Map<String, dynamic>> getWorkerAnalytics(String workerId);
+  Stream<List<OrderEntity>> watchPublicOrders({String? category});
+  Future<void> acceptOrder(
+    String orderId,
+    String workerId,
+    String workerName,
+    String? workerAvatarUrl,
+  );
 }

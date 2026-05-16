@@ -54,10 +54,10 @@ class OrderEntity extends Equatable {
   final String clientId;
   final String clientName;
   final String? clientAvatarUrl;
-  final String workerId;
-  final String workerName;
+  final String? workerId;
+  final String? workerName;
   final String? workerAvatarUrl;
-  final String serviceId;
+  final String? serviceId;
   final String serviceName;
   final String serviceCategory;
   final double amount;
@@ -81,10 +81,10 @@ class OrderEntity extends Equatable {
     required this.clientId,
     required this.clientName,
     this.clientAvatarUrl,
-    required this.workerId,
-    required this.workerName,
+    this.workerId,
+    this.workerName,
     this.workerAvatarUrl,
-    required this.serviceId,
+    this.serviceId,
     required this.serviceName,
     required this.serviceCategory,
     required this.amount,
@@ -115,15 +115,18 @@ class OrderEntity extends Equatable {
     DateTime? startedAt,
     DateTime? completedAt,
     DateTime? cancelledAt,
+    String? workerId,
+    String? workerName,
+    String? workerAvatarUrl,
   }) {
     return OrderEntity(
       id: id ?? this.id,
       clientId: clientId,
       clientName: clientName,
       clientAvatarUrl: clientAvatarUrl,
-      workerId: workerId,
-      workerName: workerName,
-      workerAvatarUrl: workerAvatarUrl,
+      workerId: workerId ?? this.workerId,
+      workerName: workerName ?? this.workerName,
+      workerAvatarUrl: workerAvatarUrl ?? this.workerAvatarUrl,
       serviceId: serviceId,
       serviceName: serviceName,
       serviceCategory: serviceCategory,

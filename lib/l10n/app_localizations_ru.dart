@@ -198,6 +198,20 @@ class AppLocalizationsRu extends AppLocalizations {
   String get orderCancelled => 'Заказ отменён.';
 
   @override
+  String orderClientLabel(Object name) {
+    return 'Клиент: $name';
+  }
+
+  @override
+  String get chatTitle => 'Чат';
+
+  @override
+  String get chatTypeMessage => 'Написать сообщение...';
+
+  @override
+  String get chatStartConversation => 'Начните общение!';
+
+  @override
   String get profileTitle => 'Профиль';
 
   @override
@@ -583,6 +597,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navWorkerDashboard => 'Главная';
 
   @override
+  String get navOrderFinder => 'Биржа';
+
+  @override
   String get navWorkerServices => 'Услуги';
 
   @override
@@ -676,4 +693,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get workerServiceDeleteConfirmBtn => 'Удалить';
+
+  @override
+  String get orderFinderTitle => 'Поиск заказов';
+
+  @override
+  String get orderFinderEmpty => 'Актуальных заказов пока нет';
+
+  @override
+  String get orderFinderCategory => 'Категория:';
 }

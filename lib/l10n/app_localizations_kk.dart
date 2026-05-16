@@ -199,6 +199,20 @@ class AppLocalizationsKk extends AppLocalizations {
   String get orderCancelled => 'Тапсырыс бас тартылды.';
 
   @override
+  String orderClientLabel(Object name) {
+    return 'Клиент: $name';
+  }
+
+  @override
+  String get chatTitle => 'Чат';
+
+  @override
+  String get chatTypeMessage => 'Хабарлама жазу...';
+
+  @override
+  String get chatStartConversation => 'Әңгімені бастаңыз!';
+
+  @override
   String get profileTitle => 'Профиль';
 
   @override
@@ -585,6 +599,9 @@ class AppLocalizationsKk extends AppLocalizations {
   String get navWorkerDashboard => 'Басты';
 
   @override
+  String get navOrderFinder => 'Биржа';
+
+  @override
   String get navWorkerServices => 'Қызметтер';
 
   @override
@@ -678,4 +695,13 @@ class AppLocalizationsKk extends AppLocalizations {
 
   @override
   String get workerServiceDeleteConfirmBtn => 'Жою';
+
+  @override
+  String get orderFinderTitle => 'Тапсырыстарды іздеу';
+
+  @override
+  String get orderFinderEmpty => 'Әзірге өзекті тапсырыстар жоқ';
+
+  @override
+  String get orderFinderCategory => 'Санат:';
 }

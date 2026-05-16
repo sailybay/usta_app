@@ -67,7 +67,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.person_rounded),
-            onPressed: () => context.go(AppRouter.profile),
+            onPressed: () => context.push(AppRouter.profile),
           ),
         ],
       ),

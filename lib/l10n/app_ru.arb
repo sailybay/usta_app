@@ -70,6 +70,12 @@
   "orderReviewSubmitted": "Отзыв отправлен. Спасибо!",
   "orderUpdated": "Статус заказа обновлён.",
   "orderCancelled": "Заказ отменён.",
+  "orderClientLabel": "Клиент: {name}",
+  "chatTitle": "Чат",
+  "chatTypeMessage": "Написать сообщение...",
+  "chatStartConversation": "Начните общение!",
+
+
 
   "profileTitle": "Профиль",
   "profileRating": "Рейтинг",
@@ -216,6 +222,7 @@
   "ordersMadeBy": "от",
 
   "navWorkerDashboard": "Главная",
+  "navOrderFinder": "Биржа",
   "navWorkerServices": "Услуги",
 
   "workerServicesTitle": "Мои услуги",
@@ -248,5 +255,8 @@
   "workerServiceDeleteTitle": "Удалить услугу?",
   "workerServiceDeleteConfirm": "Это действие нельзя отменить. Услуга будет скрыта.",
   "workerServiceDeleteCancel": "Отмена",
-  "workerServiceDeleteConfirmBtn": "Удалить"
+  "workerServiceDeleteConfirmBtn": "Удалить",
+  "orderFinderTitle": "Поиск заказов",
+  "orderFinderEmpty": "Актуальных заказов пока нет",
+  "orderFinderCategory": "Категория:"
 }

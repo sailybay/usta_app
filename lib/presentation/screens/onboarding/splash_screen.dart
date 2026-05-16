@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../../core/router/app_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/scripts/seed_firestore.dart';
@@ -41,15 +42,28 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigate() async {
     await Future.delayed(const Duration(seconds: 2));
-    // Seed Firestore with demo data on first launch only
+
     final prefs = await SharedPreferences.getInstance();
     final alreadySeeded = prefs.getBool('db_seeded') ?? false;
+
     if (!alreadySeeded) {
       try {
-        await SeedFirestore.run();
-        await prefs.setBool('db_seeded', true);
+        final connectivityResult = await (Connectivity().checkConnectivity());
+        final hasInternet = !connectivityResult.contains(
+          ConnectivityResult.none,
+        );
+
+        if (hasInternet) {
+          // Run seed with a timeout to prevent hanging
+          await SeedFirestore.run().timeout(
+            const Duration(seconds: 10),
+            onTimeout: () => debugPrint('[Seed] Timeout: skipping for now'),
+          );
+          await prefs.setBool('db_seeded', true);
+        } else {
+          debugPrint('[Seed] No internet: skipping seeding');
+        }
       } catch (e) {
-        // Seed failed silently — may already have data
         debugPrint('[Seed] Error: $e');
       }
     }

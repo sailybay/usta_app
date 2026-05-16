@@ -3,7 +3,7 @@ import '../entities/service_entity.dart';
 abstract class ServiceRepositoryInterface {
   Future<List<ServiceEntity>> getServices({String? category, String? sortBy});
 
-  Stream<List<ServiceEntity>> watchServices({String? category});
+  Stream<List<ServiceEntity>> watchServices({String? category, String? sortBy});
 
   Future<List<ServiceEntity>> getServicesByWorker(String workerId);
 

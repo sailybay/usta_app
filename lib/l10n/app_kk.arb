@@ -131,6 +131,12 @@
   "orderReviewSubmitted": "Пікір жіберілді. Рақмет!",
   "orderUpdated": "Тапсырыс күйі жаңартылды.",
   "orderCancelled": "Тапсырыс бас тартылды.",
+  "orderClientLabel": "Клиент: {name}",
+  "chatTitle": "Чат",
+  "chatTypeMessage": "Хабарлама жазу...",
+  "chatStartConversation": "Әңгімені бастаңыз!",
+
+
 
   "profileTitle": "Профиль",
   "@profileTitle": { "description": "Profile screen title" },
@@ -283,6 +289,7 @@
   "ordersMadeBy": "арқылы",
 
   "navWorkerDashboard": "Басты",
+  "navOrderFinder": "Биржа",
   "navWorkerServices": "Қызметтер",
 
   "workerServicesTitle": "Менің қызметтерім",
@@ -315,5 +322,8 @@
   "workerServiceDeleteTitle": "Қызметті жою?",
   "workerServiceDeleteConfirm": "Бұл әрекетті болдырмау мүмкін емес. Қызмет жасырынады.",
   "workerServiceDeleteCancel": "Болдырмау",
-  "workerServiceDeleteConfirmBtn": "Жою"
+  "workerServiceDeleteConfirmBtn": "Жою",
+  "orderFinderTitle": "Тапсырыстарды іздеу",
+  "orderFinderEmpty": "Әзірге өзекті тапсырыстар жоқ",
+  "orderFinderCategory": "Санат:"
 }

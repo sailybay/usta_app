@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/models/chat_model.dart';
 import '../../../data/repositories/support_repositories.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../blocs/auth/auth_bloc.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -71,9 +72,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: Text(l10n.chatTitle),
         actions: [
           IconButton(icon: const Icon(Icons.phone_rounded), onPressed: () {}),
         ],
@@ -89,10 +91,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
                 final messages = snapshot.data ?? [];
                 if (messages.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
-                      'Start the conversation!',
-                      style: TextStyle(color: AppColors.textHint),
+                      AppLocalizations.of(context).chatStartConversation,
+                      style: const TextStyle(color: AppColors.textHint),
                     ),
                   );
                 }
@@ -141,7 +143,7 @@ class _ChatScreenState extends State<ChatScreen> {
               controller: _textController,
               onSubmitted: (_) => _sendMessage(),
               decoration: InputDecoration(
-                hintText: 'Type a message...',
+                hintText: AppLocalizations.of(context).chatTypeMessage,
                 filled: true,
                 fillColor: AppColors.surfaceVariant,
                 border: OutlineInputBorder(

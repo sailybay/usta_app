@@ -16,6 +16,7 @@ class WorkerShell extends StatelessWidget {
 
   static const _tabs = [
     AppRouter.workerDashboard,
+    AppRouter.workerOrderFinder,
     AppRouter.workerServices,
     AppRouter.orders,
     AppRouter.profile,
@@ -43,6 +44,11 @@ class WorkerShell extends StatelessWidget {
             icon: const Icon(Icons.dashboard_outlined),
             selectedIcon: const Icon(Icons.dashboard_rounded),
             label: l10n.navWorkerDashboard,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.search_rounded),
+            selectedIcon: const Icon(Icons.manage_search_rounded),
+            label: l10n.navOrderFinder,
           ),
           NavigationDestination(
             icon: const Icon(Icons.home_repair_service_outlined),

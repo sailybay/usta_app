@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:usta_app/l10n/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../domain/entities/order_entity.dart';
 
@@ -15,6 +16,8 @@ class OrderStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final config = _getConfig(status);
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -36,7 +39,7 @@ class OrderStatusBadge extends StatelessWidget {
           ),
           const SizedBox(width: 5),
           Text(
-            status.label,
+            _getStatusLabel(status, l10n),
             style: TextStyle(
               color: isDark ? Colors.white : config['color'],
               fontWeight: FontWeight.w700,
@@ -46,6 +49,21 @@ class OrderStatusBadge extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getStatusLabel(OrderStatus status, AppLocalizations l10n) {
+    switch (status) {
+      case OrderStatus.pending:
+        return l10n.orderStatusPending;
+      case OrderStatus.accepted:
+        return l10n.orderStatusAccepted;
+      case OrderStatus.inProgress:
+        return l10n.orderStatusInProgress;
+      case OrderStatus.completed:
+        return l10n.orderStatusCompleted;
+      case OrderStatus.cancelled:
+        return l10n.orderStatusCancelled;
+    }
   }
 
   Map<String, dynamic> _getConfig(OrderStatus status) {

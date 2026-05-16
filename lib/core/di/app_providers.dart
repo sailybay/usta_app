@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:usta_app/core/ai/ai_assistant_service.dart';
 import 'package:usta_app/core/router/app_router.dart';
 import 'package:usta_app/data/repositories/repositories.dart';
+import 'package:usta_app/domain/repositories/service_repository_interface.dart';
 import 'package:usta_app/presentation/blocs/blocs.dart';
 
 /// Корневой провайдер — настраивает все репозитории и BLoC-и для всего приложения.
@@ -19,7 +21,7 @@ class _AppProvidersState extends State<AppProviders> {
   late final AuthRepository _authRepository;
   late final UserRepository _userRepository;
   late final OrderRepository _orderRepository;
-  late final ServiceRepository _serviceRepository;
+  late final ServiceRepositoryInterface _serviceRepository;
   late final ReviewRepository _reviewRepository;
   late final AiAssistantService _aiService;
 
@@ -30,6 +32,8 @@ class _AppProvidersState extends State<AppProviders> {
   late final OrderBloc _orderBloc;
   late final AiBloc _aiBloc;
   late final LocaleBloc _localeBloc;
+
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
   @override
   void initState() {
@@ -45,6 +49,7 @@ class _AppProvidersState extends State<AppProviders> {
       ..add(AuthCheckRequested());
     // C4-fix: Wire reactive router guard to AuthBloc stream
     AppRouter.setAuthStream(_authBloc.stream);
+
     _serviceBloc = ServiceBloc(serviceRepository: _serviceRepository);
     _workerServiceBloc = WorkerServiceBloc(
       serviceRepository: _serviceRepository,
@@ -55,10 +60,20 @@ class _AppProvidersState extends State<AppProviders> {
     );
     _aiBloc = AiBloc(aiService: _aiService);
     _localeBloc = LocaleBloc()..add(LocaleLoaded());
+
+    // Listen for logout to cleanup dependent blocs
+    _authStateSubscription = _authBloc.stream.listen((state) {
+      if (state is AuthUnauthenticated) {
+        _orderBloc.add(OrderReset());
+        _serviceBloc.add(ServiceReset());
+        _workerServiceBloc.add(WorkerServiceReset());
+      }
+    });
   }
 
   @override
   void dispose() {
+    _authStateSubscription.cancel();
     _authBloc.close();
     _serviceBloc.close();
     _workerServiceBloc.close();

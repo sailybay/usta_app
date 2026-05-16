@@ -26,7 +26,11 @@ class _OrdersScreenState extends State<OrdersScreen>
     _tabController = TabController(length: 3, vsync: this);
     final authState = context.read<AuthBloc>().state;
     if (authState is AuthAuthenticated) {
-      context.read<OrderBloc>().add(OrderLoadClientOrders(authState.user.id));
+      if (authState.user.isWorker) {
+        context.read<OrderBloc>().add(OrderLoadWorkerOrders(authState.user.id));
+      } else {
+        context.read<OrderBloc>().add(OrderLoadClientOrders(authState.user.id));
+      }
     }
   }
 
@@ -41,6 +45,12 @@ class _OrdersScreenState extends State<OrdersScreen>
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
+        leading: context.canPop()
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
+              )
+            : null,
         title: Text(l10n.ordersMyOrders),
         bottom: TabBar(
           controller: _tabController,
@@ -195,7 +205,7 @@ class _OrderCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '${l10n.ordersMadeBy} ${order.workerName}',
+              '${l10n.ordersMadeBy} ${order.workerName ?? '...'}',
               style: Theme.of(
                 context,
               ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),

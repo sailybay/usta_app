@@ -13,7 +13,7 @@ class ServiceRepository implements ServiceRepositoryInterface {
     String? category,
     String? sortBy,
   }) async {
-    Query query = _firestore
+    Query<Map<String, dynamic>> query = _firestore
         .collection(AppConstants.servicesCollection)
         .where('isActive', isEqualTo: true);
 
@@ -33,14 +33,17 @@ class ServiceRepository implements ServiceRepositoryInterface {
 
     final result = await query.get();
     return result.docs
-        .map((doc) => ServiceModel.fromFirestore(doc).toEntity())
+        .map((doc) => ServiceModel.fromFirestore(doc.data(), doc.id).toEntity())
         .toList();
   }
 
   // Real-time services stream
   @override
-  Stream<List<ServiceEntity>> watchServices({String? category}) {
-    Query query = _firestore
+  Stream<List<ServiceEntity>> watchServices({
+    String? category,
+    String? sortBy,
+  }) {
+    Query<Map<String, dynamic>> query = _firestore
         .collection(AppConstants.servicesCollection)
         .where('isActive', isEqualTo: true);
 
@@ -48,14 +51,23 @@ class ServiceRepository implements ServiceRepositoryInterface {
       query = query.where('category', isEqualTo: category);
     }
 
-    return query
-        .orderBy('rating', descending: true)
-        .snapshots()
-        .map(
-          (s) => s.docs
-              .map((doc) => ServiceModel.fromFirestore(doc).toEntity())
-              .toList(),
-        );
+    if (sortBy == 'rating') {
+      query = query.orderBy('rating', descending: true);
+    } else if (sortBy == 'price_asc') {
+      query = query.orderBy('price', descending: false);
+    } else if (sortBy == 'price_desc') {
+      query = query.orderBy('price', descending: true);
+    } else {
+      query = query.orderBy('createdAt', descending: true);
+    }
+
+    return query.snapshots().map(
+      (s) => s.docs
+          .map(
+            (doc) => ServiceModel.fromFirestore(doc.data(), doc.id).toEntity(),
+          )
+          .toList(),
+    );
   }
 
   // Get services by worker
@@ -66,7 +78,7 @@ class ServiceRepository implements ServiceRepositoryInterface {
         .where('workerId', isEqualTo: workerId)
         .get();
     return result.docs
-        .map((doc) => ServiceModel.fromFirestore(doc).toEntity())
+        .map((doc) => ServiceModel.fromFirestore(doc.data(), doc.id).toEntity())
         .toList();
   }
 
@@ -82,7 +94,7 @@ class ServiceRepository implements ServiceRepositoryInterface {
         .where('isActive', isEqualTo: true)
         .get();
     return result.docs
-        .map((doc) => ServiceModel.fromFirestore(doc).toEntity())
+        .map((doc) => ServiceModel.fromFirestore(doc.data(), doc.id).toEntity())
         .toList();
   }
 
@@ -94,7 +106,7 @@ class ServiceRepository implements ServiceRepositoryInterface {
         .doc(serviceId)
         .get();
     if (!doc.exists) return null;
-    return ServiceModel.fromFirestore(doc).toEntity();
+    return ServiceModel.fromFirestore(doc.data()!, doc.id).toEntity();
   }
 
   // Create service

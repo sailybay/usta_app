@@ -58,6 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildServiceGrid(l10n),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push(AppRouter.createOrder),
+        label: Text(l10n.createOrderTitle),
+        icon: const Icon(Icons.add_task_rounded),
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+      ),
     );
   }
 
@@ -149,36 +156,43 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCategories(BuildContext context, AppLocalizations l10n) {
     final categories = [
       {
+        'id': null,
         'name': l10n.catAll,
         'icon': Icons.grid_view_rounded,
         'color': AppColors.primary,
       },
       {
+        'id': 'Cleaning',
         'name': l10n.catCleaning,
         'icon': Icons.cleaning_services_rounded,
         'color': AppColors.categoryCleaning,
       },
       {
+        'id': 'Repair',
         'name': l10n.catRepair,
         'icon': Icons.build_rounded,
         'color': AppColors.categoryRepair,
       },
       {
+        'id': 'Delivery',
         'name': l10n.catDelivery,
         'icon': Icons.delivery_dining_rounded,
         'color': AppColors.categoryDelivery,
       },
       {
+        'id': 'Tutoring',
         'name': l10n.catTutoring,
         'icon': Icons.school_rounded,
         'color': AppColors.categoryTutor,
       },
       {
+        'id': 'Beauty',
         'name': l10n.catBeauty,
         'icon': Icons.face_retouching_natural_rounded,
         'color': AppColors.categoryBeauty,
       },
       {
+        'id': 'Plumbing',
         'name': l10n.catPlumbing,
         'icon': Icons.plumbing_rounded,
         'color': AppColors.categoryPlumbing,
@@ -198,9 +212,10 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCount: categories.length,
             itemBuilder: (context, index) {
               final cat = categories[index];
+              final id = cat['id'] as String?;
               final name = cat['name'] as String;
               final isSelected =
-                  (index == 0 && selected == null) || (name == selected);
+                  (id == null && selected == null) || (id == selected);
               return Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: CategoryChip(
@@ -209,9 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: cat['color'] as Color,
                   isSelected: isSelected,
                   onTap: () {
-                    context.read<ServiceBloc>().add(
-                      ServiceSelectCategory(index == 0 ? null : name),
-                    );
+                    context.read<ServiceBloc>().add(ServiceSelectCategory(id));
                   },
                 ),
               );

@@ -14,8 +14,8 @@ import 'package:usta_app/presentation/screens/map/location_picker_screen.dart';
 import 'widgets/order_form_widgets.dart';
 
 class CreateOrderScreen extends StatefulWidget {
-  final ServiceEntity service;
-  const CreateOrderScreen({super.key, required this.service});
+  final ServiceEntity? service;
+  const CreateOrderScreen({super.key, this.service});
 
   @override
   State<CreateOrderScreen> createState() => _CreateOrderScreenState();
@@ -24,6 +24,8 @@ class CreateOrderScreen extends StatefulWidget {
 class _CreateOrderScreenState extends State<CreateOrderScreen> {
   final _addressController = TextEditingController();
   final _notesController = TextEditingController();
+  final _priceController = TextEditingController();
+  String? _selectedCategory;
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 1));
   TimeOfDay _selectedTime = const TimeOfDay(hour: 10, minute: 0);
   PaymentMethod _selectedPayment = PaymentMethod.card;
@@ -100,13 +102,18 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       clientId: user.id,
       clientName: user.name,
       clientAvatarUrl: user.avatarUrl,
-      workerId: widget.service.workerId,
-      workerName: widget.service.workerName,
-      workerAvatarUrl: widget.service.workerAvatarUrl,
-      serviceId: widget.service.id,
-      serviceName: widget.service.name,
-      serviceCategory: widget.service.category,
-      amount: widget.service.price,
+      workerId: widget.service?.workerId,
+      workerName: widget.service?.workerName,
+      workerAvatarUrl: widget.service?.workerAvatarUrl,
+      serviceId: widget.service?.id,
+      serviceName:
+          widget.service?.name ?? _notesController.text.split('\n').first,
+      serviceCategory:
+          widget.service?.category ?? _selectedCategory ?? 'Cleaning',
+      amount:
+          widget.service?.price ??
+          double.tryParse(_priceController.text) ??
+          0.0,
       status: OrderStatus.pending,
       address: _addressController.text.trim(),
       notes: _notesController.text.trim(),
@@ -183,61 +190,101 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   // ─── Section builders ──────────────────────────────────────────────────────
 
   Widget _buildServiceSummary(AppLocalizations l10n) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(14),
+    if (widget.service != null) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: AppColors.primaryGradient,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(
+                Icons.handyman_rounded,
+                color: Colors.white,
+                size: 28,
+              ),
             ),
-            child: const Icon(
-              Icons.handyman_rounded,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.service.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.service!.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${widget.service.workerName} ${l10n.createOrderVia}',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.8),
-                    fontSize: 13,
+                  const SizedBox(height: 4),
+                  Text(
+                    '${widget.service!.workerName} ${l10n.createOrderVia}',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontSize: 13,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Text(
-            widget.service.formattedPrice,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-              fontSize: 18,
+            Text(
+              widget.service!.formattedPrice,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w800,
+                fontSize: 18,
+              ),
             ),
+          ],
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.orderCategory, style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 12),
+        DropdownButtonFormField<String>(
+          initialValue: _selectedCategory,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.category_outlined),
           ),
-        ],
-      ),
+          items: [
+            'Cleaning',
+            'Repair',
+            'Delivery',
+            'Tutoring',
+            'Beauty',
+            'Plumbing',
+          ].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+          onChanged: (val) => setState(() => _selectedCategory = val),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          l10n.workerServicePrice,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 12),
+        TextFormField(
+          controller: _priceController,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.payments_outlined),
+            suffixText: '₸',
+          ),
+          keyboardType: TextInputType.number,
+          onChanged: (val) => setState(() {}),
+        ),
+      ],
     );
   }
 
@@ -363,8 +410,10 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
   }
 
   Widget _buildPriceBreakdown(AppLocalizations l10n) {
-    final serviceFee = widget.service.price * 0.05;
-    final total = widget.service.price + serviceFee;
+    final basePrice =
+        widget.service?.price ?? double.tryParse(_priceController.text) ?? 0.0;
+    final serviceFee = basePrice * 0.05;
+    final total = basePrice + serviceFee;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -375,7 +424,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         children: [
           PriceRow(
             label: l10n.createOrderServicePrice,
-            value: '${widget.service.price.toStringAsFixed(0)} ₸',
+            value: '${basePrice.toStringAsFixed(0)} ₸',
           ),
           const SizedBox(height: 8),
           PriceRow(

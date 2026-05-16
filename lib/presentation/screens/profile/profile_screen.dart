@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:usta_app/l10n/app_localizations.dart';
 import 'package:usta_app/core/theme/app_colors.dart';
 import 'package:usta_app/core/router/app_router.dart';
 import 'package:usta_app/presentation/blocs/auth/auth_bloc.dart';
-//import 'package:usta_app/presentation/blocs/order/order_bloc.dart';
-//import 'package:usta_app/presentation/widgets/order_status_badge.dart';
-//import 'package:usta_app/data/models/order_model.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
-  void _showComingSoon(BuildContext context) {
+  void _showComingSoon(BuildContext context, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Feature coming soon!'),
+      SnackBar(
+        content: Text(l10n.comingSoon),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -22,9 +20,10 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final authState = context.read<AuthBloc>().state;
     if (authState is! AuthAuthenticated) {
-      return const Center(child: Text('Not logged in'));
+      return Center(child: Text(l10n.errorGeneric));
     }
     final user = authState.user;
 
@@ -34,6 +33,12 @@ class ProfileScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 220,
             pinned: true,
+            leading: context.canPop()
+                ? IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => context.pop(),
+                  )
+                : null,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: const BoxDecoration(
@@ -114,7 +119,9 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              user.role.name.toUpperCase(),
+                              user.isWorker
+                                  ? l10n.profileRoleWorker
+                                  : l10n.profileRoleClient,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 11,
@@ -146,22 +153,24 @@ class ProfileScreen extends StatelessWidget {
               child: Row(
                 children: [
                   _StatCard(
-                    label: 'Rating',
+                    label: l10n.profileRating,
                     value: user.rating.toStringAsFixed(1),
                     icon: Icons.star_rounded,
                     color: AppColors.star,
                   ),
                   const SizedBox(width: 12),
                   _StatCard(
-                    label: 'Reviews',
+                    label: l10n.profileReviews,
                     value: user.reviewCount.toString(),
                     icon: Icons.reviews_rounded,
                     color: AppColors.primary,
                   ),
                   const SizedBox(width: 12),
                   _StatCard(
-                    label: 'Role',
-                    value: user.isWorker ? 'Worker' : 'Client',
+                    label: l10n.profileRole,
+                    value: user.isWorker
+                        ? l10n.profileRoleWorker
+                        : l10n.profileRoleClient,
                     icon: Icons.person_rounded,
                     color: AppColors.secondary,
                   ),
@@ -173,26 +182,26 @@ class ProfileScreen extends StatelessWidget {
           // Menu items
           SliverList(
             delegate: SliverChildListDelegate([
-              _buildSection('Аккаунт', [
+              _buildSection(l10n.profileSectionAccount, [
                 _MenuItem(
                   icon: Icons.edit_rounded,
-                  label: 'Редактировать профиль',
-                  onTap: () => _showComingSoon(context),
+                  label: l10n.profileEditProfile,
+                  onTap: () => _showComingSoon(context, l10n),
                 ),
               ]),
               if (user.isWorker)
-                _buildSection('Для мастера', [
+                _buildSection(l10n.profileSectionWorker, [
                   _MenuItem(
                     icon: Icons.dashboard_rounded,
-                    label: 'Дашборд',
+                    label: l10n.profileDashboard,
                     onTap: () => context.push(AppRouter.workerDashboard),
                     trailingColor: AppColors.primary,
                   ),
                 ]),
-              _buildSection('Поддержка', [
+              _buildSection(l10n.profileSectionSupport, [
                 _MenuItem(
                   icon: Icons.auto_awesome_rounded,
-                  label: 'AI Ассистент',
+                  label: l10n.profileAiAssistant,
                   onTap: () => context.go(AppRouter.aiChat),
                   trailingColor: AppColors.primary,
                 ),
@@ -200,12 +209,11 @@ class ProfileScreen extends StatelessWidget {
               _buildSection('', [
                 _MenuItem(
                   icon: Icons.logout_rounded,
-                  label: 'Выйти',
+                  label: l10n.profileSignOut,
                   textColor: AppColors.error,
                   iconColor: AppColors.error,
                   onTap: () {
                     context.read<AuthBloc>().add(AuthLogoutRequested());
-                    context.go(AppRouter.login);
                   },
                 ),
               ]),
