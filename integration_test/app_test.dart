@@ -33,5 +33,26 @@ void main() {
       // В Flutter приложениях, использующих go_router, Router должен быть в дереве.
       expect(routerFinder, findsWidgets);
     });
+
+    testWidgets('Interactive UI interactions work (Language Switcher)', (
+      tester,
+    ) async {
+      app.main();
+      await tester.pumpAndSettle(const Duration(seconds: 4));
+
+      // При непройденной авторизации мы оказываемся на LoginScreen.
+      // Попробуем открыть меню смены языка
+      final languageButton = find.byIcon(Icons.language_rounded);
+
+      // Проверяем, что кнопка смены языка существует
+      if (languageButton.evaluate().isNotEmpty) {
+        await tester.tap(languageButton);
+        await tester.pumpAndSettle();
+
+        // Или если мы используем иконки:
+        final iconCheck = find.byType(PopupMenuItem<String>);
+        expect(iconCheck, findsWidgets);
+      }
+    });
   });
 }

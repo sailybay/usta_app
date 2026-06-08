@@ -20,8 +20,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Configure Google Fonts to not throw exceptions if offline
-  GoogleFonts.config.allowRuntimeFetching = false;
+  // Allow Google Fonts to be fetched dynamically (requires internet on first run)
+  GoogleFonts.config.allowRuntimeFetching = true;
 
   try {
     await Firebase.initializeApp();
